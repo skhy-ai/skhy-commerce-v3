@@ -1,0 +1,103 @@
+graph TD
+  subgraph AIR_VEHICLE ["Vehicular Subsystems"]
+    subgraph 900030 ["Holybro Pixhawk 6C Autopilot"]
+      900030_TELEM1(TELEM1)
+      900030_TELEM1_TX[TX]
+      900030_TELEM1_RX[RX]
+      900030_TELEM1_GND[GND]
+      900030_TELEM1_V5[V5]
+      900030_TELEM2(TELEM2)
+      900030_TELEM2_TX[TX]
+      900030_TELEM2_RX[RX]
+      900030_TELEM2_GND[GND]
+      900030_TELEM2_V5[V5]
+      900030_GPS1(GPS1)
+      900030_GPS1_TX[TX]
+      900030_GPS1_RX[RX]
+      900030_GPS1_GND[GND]
+      900030_GPS1_V5[V5]
+      900030_POWER1(POWER1)
+      900030_POWER1_VCC[VCC]
+      900030_POWER1_GND[GND]
+      900030_MAIN_OUT(MAIN_OUT)
+      900030_MAIN_OUT_PWM[PWM]
+      900030_MAIN_OUT_GND[GND]
+    end
+    subgraph rfd900 ["RFD900 Telemetry"]
+      rfd900_HEADER(HEADER)
+      rfd900_HEADER_TX[TX]
+      rfd900_HEADER_RX[RX]
+      rfd900_HEADER_GND[GND]
+      rfd900_HEADER_VCC[VCC]
+      rfd900_ANT(ANT)
+      rfd900_ANT_RF_INOUT[RF_INOUT]
+    end
+    subgraph 900015 ["AJGPS 602 (9-Channel CRPA)"]
+      900015_UART(UART)
+      900015_UART_TX[TX]
+      900015_UART_RX[RX]
+      900015_UART_GND[GND]
+      900015_I2C(I2C)
+      900015_I2C_SCL[SCL]
+      900015_I2C_SDA[SDA]
+      900015_I2C_GND[GND]
+      900015_PWR(PWR)
+      900015_PWR_VCC[VCC]
+      900015_PWR_GND[GND]
+    end
+    subgraph 900007 ["SKHY-MOBISENSE Mobile Station"]
+      900007_MAVLINK(MAVLINK)
+      900007_MAVLINK_TX[TX]
+      900007_MAVLINK_RX[RX]
+      900007_MAVLINK_GND[GND]
+      900007_ETH(ETH)
+      900007_ETH_T+[T+]
+      900007_ETH_T-[T-]
+      900007_ETH_R+[R+]
+      900007_ETH_R-[R-]
+      900007_PWR(PWR)
+      900007_PWR_VCC[VCC]
+      900007_PWR_GND[GND]
+    end
+    subgraph battery ["Power Source (Battery)"]
+      battery_OUTPUT(OUTPUT)
+      battery_OUTPUT_VCC[VCC]
+      battery_OUTPUT_GND[GND]
+    end
+  end
+  subgraph GND_STATION ["Ground Segment"]
+    subgraph generic_gcs ["Ground Control Station"]
+      generic_gcs_RF_IN(RF_IN)
+      generic_gcs_RF_IN_ANT[ANT]
+    end
+  end
+  battery_OUTPUT_VCC ==>|"Power Rail"| 900030_POWER1_VCC
+  linkStyle 0 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 900030_POWER1_GND
+  linkStyle 1 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_VCC ==>|"VBAT"| 900015_PWR_VCC
+  linkStyle 2 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 900015_PWR_GND
+  linkStyle 3 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_VCC ==>|"VBAT"| 900007_PWR_VCC
+  linkStyle 4 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 900007_PWR_GND
+  linkStyle 5 stroke:#ef4444,stroke-width:2px;
+  900030_GPS1_TX -->|"Serial"| 900015_UART_RX
+  linkStyle 6 stroke:#94a3b8,stroke-width:1px;
+  900030_GPS1_RX -->|"Serial"| 900015_UART_TX
+  linkStyle 7 stroke:#94a3b8,stroke-width:1px;
+  900030_GPS1_SCL -->|"I2C"| 900015_I2C_SCL
+  linkStyle 8 stroke:#94a3b8,stroke-width:1px;
+  900030_GPS1_SDA -->|"I2C"| 900015_I2C_SDA
+  linkStyle 9 stroke:#94a3b8,stroke-width:1px;
+  900030_GPS1_GND -->|"GND"| 900015_UART_GND
+  linkStyle 10 stroke:#94a3b8,stroke-width:1px;
+  900030_GPS1_V5 ==>|"5V"| 900015_PWR_VCC
+  linkStyle 11 stroke:#ef4444,stroke-width:2px;
+  900030_TELEM1_TX -->|"UART"| rfd900_HEADER_RX
+  linkStyle 12 stroke:#94a3b8,stroke-width:1px;
+  900030_TELEM1_RX -->|"UART"| rfd900_HEADER_TX
+  linkStyle 13 stroke:#94a3b8,stroke-width:1px;
+  rfd900_ANT_RF_INOUT -.->|"900MHz Link"| generic_gcs_RF_IN_ANT
+  linkStyle 14 stroke:#3b82f6,stroke-width:2px,stroke-dasharray: 5 5;

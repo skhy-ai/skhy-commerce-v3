@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script to apply the email campaigns migration
+
+echo "📧 Applying Email Campaigns Migration..."
+echo ""
+echo "Please follow these steps:"
+echo ""
+echo "1. Open Supabase Dashboard: https://supabase.com/dashboard"
+echo "2. Select your project"
+echo "3. Navigate to SQL Editor (left sidebar)"
+echo "4. Click 'New Query'"
+echo "5. Copy the contents of: supabase/migrations/037_email_campaigns.sql"
+echo "6. Paste into SQL Editor"
+echo "7. Click 'Run' (or press Ctrl+Enter)"
+echo ""
+echo "Expected result: 'Email campaigns table created successfully'"
+echo ""
+echo "Or, if using Supabase CLI:"
+echo "  supabase db push"
+echo ""

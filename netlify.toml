@@ -1,0 +1,76 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://www.youtube.com https://s.ytimg.com https://js.stripe.com https://m.stripe.network https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https://*.acasom.com https://*.holybro.com https://api.web3forms.com https://ipapi.co https://api.ipify.org https://get.geojs.io https://www.google-analytics.com https://www.google.com https://www.googletagmanager.com https://*.supabase.co https://*.supabase.net wss://*.supabase.co https://api.country.is https://api.stripe.com https://m.stripe.network https://googleads.g.doubleclick.net https://challenges.cloudflare.com https://openrouter.ai https://nominatim.openstreetmap.org; frame-ancestors 'self'; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://calendly.com https://js.stripe.com https://challenges.cloudflare.com https://drive.google.com; worker-src 'self' blob:;"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://www.youtube.com https://s.ytimg.com https://js.stripe.com https://m.stripe.network https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https://*.acasom.com https://*.holybro.com https://api.web3forms.com https://ipapi.co https://api.ipify.org https://get.geojs.io https://www.google-analytics.com https://www.google.com https://www.googletagmanager.com https://*.supabase.co https://*.supabase.net wss://*.supabase.co https://api.country.is https://api.stripe.com https://m.stripe.network https://googleads.g.doubleclick.net https://challenges.cloudflare.com https://openrouter.ai https://nominatim.openstreetmap.org; frame-ancestors 'self'; form-action 'self' https://api.web3forms.com; base-uri 'self'; object-src 'none'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://calendly.com https://js.stripe.com https://challenges.cloudflare.com https://drive.google.com; worker-src 'self' blob:;"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/data/mermaid/*.mmd"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Content-Type = "text/plain; charset=utf-8"
+
+[build]
+  command = "npx vite build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/api/visitor-counts"
+  to = "/.netlify/functions/visitor-counts"
+  status = 200
+
+[[redirects]]
+  from = "/api/record-visit"
+  to = "/.netlify/functions/record-visit"
+  status = 200
+
+[[redirects]]
+  from = "/api/send-email"
+  to = "/.netlify/functions/send-email"
+  status = 200
+
+[[redirects]]
+  from = "/api/ai-chat"
+  to = "/.netlify/functions/ai-chat"
+  status = 200
+
+[[redirects]]
+  from = "/api/geoip"
+  to = "https://ipapi.co/json/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/assets/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false

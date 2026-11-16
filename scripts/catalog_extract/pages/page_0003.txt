@@ -1,0 +1,49 @@
+SKHY SURVEYOR OPTIONS
+Seeker
+Payload: Standard Visual + 8-Mic Acoustic Array
+Role: Stealthy detection and tracking of engine-driven threats.
+Conjurer
+Payload: Thermal Imaging + Advanced RF Signal Intelligence
+Role: Multi-spectral nighttime ISR and spectrum monitoring.
+Wizard
+Payload: Full Fusion Suite + SKHY Light Edge AI Node
+Role: Autonomous edge classification and real-time sensor fusion.
+Key Features
+Acoustic Intelligence: Detects and localizes enemy drones, helicopters, and jets at extreme
+ranges.
+Jam-Resilient Links: Integrated with SKHY MANET and AJGPS systems.
+Autonomous Mission Logic: Onboard AI for automated threat identification and reporting.
+© 2026 SKHY AI SOLUTIONS. All rights reserved.
+SKHY
+SKHY Fiber-Optic Tethered Drone
+Technical Specifications
+Feature
+Details
+Data Link
+Unjammable Fiber-Optic Micro Tether
+Tether Length
+Up to 120 km (Configurable)
+Visual Payload
+30x Optical Zoom / 2K Resolution
+Thermal Payload
+640 x 512 Vox / 19mm Lens
+Laser Range Finder
+1500m LRF
+Platform Weight
+Varies (Exclude tether)
+Overview
+The SKHY Fiber-Optic Drone is the
+ultimate solution for secure,
+jam-proof observation. By utilizing
+an ultra-lightweight fiber
+micro-tether for data transmission,
+the system is immune to all forms of
+RF jamming, spoofing, and
+detection, making it invisible on the
+electromagnetic spectrum.
+Package Variants
+Basic
+●Configuration: 30x Zoom + 500m Tether
+●Application: Close-range secure perimeter surveillance.
+© 2026 SKHY AI SOLUTIONS. All rights reserved.
+SKHY

@@ -5,9 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "cache:csv": "node scripts/cache_marketplace_from_csv.js",
+    "cache:live": "node scripts/cache_marketplace.js && node scripts/repair-store-images.cjs && node scripts/verify-store-images.cjs",
+    "prebuild": "node scripts/cache_marketplace.js && node scripts/repair-store-images.cjs && node scripts/verify-store-images.cjs",
     "build": "tsc && vite build",
+    "postbuild": "node scripts/check-bundle-secrets.cjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:manual": "node scripts/trigger_tests.js",
+    "test:e2e": "playwright test",
+    "test:e2e:watch": "playwright test --ui"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",

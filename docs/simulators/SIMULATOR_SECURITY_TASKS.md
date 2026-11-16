@@ -1,0 +1,21 @@
+# Simulator Security & Deployment Fixes
+
+- [x] **Netlify Deployment**: Fixed `netlify.toml` CSP header syntax (converted to multi-line string).
+- [x] **Rover Simulator**: Debugged and fixed `skhy-rover-using-skhy-edge.html` crash (resolved script load order).
+- [x] **Security Overlay**: Created a unified SKHY Security Overlay including:
+    - Fixed left/right sidebars with "CONFIDENTIAL" text.
+    - Large centered SKHY logo watermark (low opacity).
+    - Subtle tiled "SKHY AI SECURITY" background watermark.
+- [x] **Bulk Application**: Injected the Security Overlay into all 11 simulators using a Python automation script.
+    - `AdvancedAcousticEngine.html`
+    - `AdvancedSensorDetectionAnalysis.html`
+    - `CRPA-simulator-v3.html`
+    - `MiningExploration.html`
+    - `Resilicomai.html`
+    - `ThreatAwareness.html`
+    - `medium and heavy lift simulator.html`
+    - `rf-jammer-simulator-white.html`
+    - `sensor_simulation_enhanced.html`
+    - `skhy-drone-installations.html`
+    - `skhy-rover-using-skhy-edge.html`
+- [ ] **Verification**: Ensure simulators load correctly and overlays do not interfere with controls.
