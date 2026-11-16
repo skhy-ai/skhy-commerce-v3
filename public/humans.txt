@@ -1,0 +1,18 @@
+/* TEAM */
+    Developer: Skhy AI Team
+    Contact: contact@skhy.systems
+    Origin: South Asia / ASEAN / India
+    Twitter: @skhy_ai
+    LinkedIn: https://linkedin.com/company/skhytech
+
+/* SITE */
+    Last updated: 2026-03-25
+    Standards: HTML5, CSS3, React, Vite
+    Frameworks: Tailwind CSS, Framer Motion
+    Infrastructure: Supabase, Netlify
+    Security: Air-Gapped / Sovereign First
+
+/* TOOLS */
+    Design: Figma
+    Code: VS Code, Git
+    Simulators: Three.js, Mermaid.js

@@ -1,0 +1,116 @@
+graph TD
+  subgraph AIR_VEHICLE ["Vehicular Subsystems"]
+    subgraph 900029 ["Cube Orange+ Autopilot"]
+      900029_TELEM1(TELEM1)
+      900029_TELEM1_TX[TX]
+      900029_TELEM1_RX[RX]
+      900029_TELEM1_CTS[CTS]
+      900029_TELEM1_RTS[RTS]
+      900029_TELEM1_GND[GND]
+      900029_TELEM1_V5[V5]
+      900029_TELEM2(TELEM2)
+      900029_TELEM2_TX[TX]
+      900029_TELEM2_RX[RX]
+      900029_TELEM2_CTS[CTS]
+      900029_TELEM2_RTS[RTS]
+      900029_TELEM2_GND[GND]
+      900029_TELEM2_V5[V5]
+      900029_GPS1(GPS1)
+      900029_GPS1_TX[TX]
+      900029_GPS1_RX[RX]
+      900029_GPS1_SCL[SCL]
+      900029_GPS1_SDA[SDA]
+      900029_GPS1_GND[GND]
+      900029_GPS1_V5[V5]
+      900029_POWER1(POWER1)
+      900029_POWER1_VCC[VCC]
+      900029_POWER1_VOLT[VOLT]
+      900029_POWER1_CURR[CURR]
+      900029_POWER1_GND[GND]
+      900029_MAIN_OUT(MAIN_OUT)
+      900029_MAIN_OUT_S1[S1]
+      900029_MAIN_OUT_S2[S2]
+      900029_MAIN_OUT_S3[S3]
+      900029_MAIN_OUT_S4[S4]
+      900029_MAIN_OUT_S5[S5]
+      900029_MAIN_OUT_S6[S6]
+      900029_MAIN_OUT_S7[S7]
+      900029_MAIN_OUT_S8[S8]
+    end
+    subgraph 900021 ["HH20 MANET Ground User"]
+      900021_DATA(DATA)
+      900021_DATA_TX[TX]
+      900021_DATA_RX[RX]
+      900021_DATA_GND[GND]
+      900021_ANT(ANT)
+      900021_ANT_RF_OUT[RF_OUT]
+      900021_PWR(PWR)
+      900021_PWR_VCC[VCC]
+      900021_PWR_GND[GND]
+    end
+    subgraph 276137616 ["SIYI ZR10 Gimbal"]
+      276137616_UART(UART)
+      276137616_UART_TX[TX]
+      276137616_UART_RX[RX]
+      276137616_UART_GND[GND]
+      276137616_ETH(ETH)
+      276137616_ETH_T+[T+]
+      276137616_ETH_T-[T-]
+      276137616_ETH_R+[R+]
+      276137616_ETH_R-[R-]
+      276137616_PWR(PWR)
+      276137616_PWR_VCC[VCC]
+      276137616_PWR_GND[GND]
+    end
+    subgraph esc_generic ["ESC Array (Propulsion)"]
+      esc_generic_SIGNAL(SIGNAL)
+      esc_generic_SIGNAL_PWM[PWM]
+      esc_generic_SIGNAL_GND[GND]
+      esc_generic_POWER(POWER)
+      esc_generic_POWER_VCC_IN[VCC_IN]
+      esc_generic_POWER_GND_IN[GND_IN]
+      esc_generic_MOTOR_OUT(MOTOR_OUT)
+      esc_generic_MOTOR_OUT_PHASE_A[PHASE_A]
+      esc_generic_MOTOR_OUT_PHASE_B[PHASE_B]
+      esc_generic_MOTOR_OUT_PHASE_C[PHASE_C]
+    end
+    subgraph battery ["Power Source (Battery)"]
+      battery_OUTPUT(OUTPUT)
+      battery_OUTPUT_VCC[VCC]
+      battery_OUTPUT_GND[GND]
+    end
+  end
+  subgraph GND_STATION ["Ground Segment"]
+    subgraph generic_gcs ["Ground Control Station"]
+      generic_gcs_RF_IN(RF_IN)
+      generic_gcs_RF_IN_ANT[ANT]
+    end
+  end
+  battery_OUTPUT_VCC ==>|"Power Rail"| 900029_POWER1_VCC
+  linkStyle 0 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 900029_POWER1_GND
+  linkStyle 1 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_VCC ==>|"VBAT"| 900021_PWR_VCC
+  linkStyle 2 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 900021_PWR_GND
+  linkStyle 3 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_VCC ==>|"VBAT"| 276137616_PWR_VCC
+  linkStyle 4 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 276137616_PWR_GND
+  linkStyle 5 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_VCC ==>|"High Current"| esc_generic_POWER_VCC_IN
+  linkStyle 6 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| esc_generic_POWER_GND_IN
+  linkStyle 7 stroke:#ef4444,stroke-width:2px;
+  900029_MAIN_OUT_S1 -->|"PWM 1-4"| esc_generic_SIGNAL_PWM
+  linkStyle 8 stroke:#94a3b8,stroke-width:1px;
+  900029_TELEM1_TX -->|"Ethernet/Serial"| 900021_DATA_RX
+  linkStyle 9 stroke:#94a3b8,stroke-width:1px;
+  900029_TELEM1_RX -->|"Ethernet/Serial"| 900021_DATA_TX
+  linkStyle 10 stroke:#94a3b8,stroke-width:1px;
+  900029_TELEM2_TX -->|"Serial"| 276137616_UART_RX
+  linkStyle 11 stroke:#94a3b8,stroke-width:1px;
+  900029_TELEM2_RX -->|"Serial"| 276137616_UART_TX
+  linkStyle 12 stroke:#94a3b8,stroke-width:1px;
+  900021_ANT_RF_OUT -.->|"MANET Link"| generic_gcs_RF_IN_ANT
+  linkStyle 13 stroke:#3b82f6,stroke-width:2px,stroke-dasharray: 5 5;

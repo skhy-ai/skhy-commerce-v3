@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy AI - Autonomous Systems Simplified | Multi-Sensor Coverage Simulation</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* SKHY Branding */
+        .skhy-watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #4facfe;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .skhy-watermark svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .skhy-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .skhy-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e0e6ed;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .skhy-logo svg {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+
+        .skhy-logo img {
+            height: 32px;
+            width: auto;
+        }
+
+        .document-title {
+            text-align: center;
+            margin: 20px 0 40px;
+            padding: 0 20px;
+        }
+        
+        .document-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .document-subtitle {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* General styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0f1c 0%, #1a2332 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header styling */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* Data Sources and Citation Panel styling */
+        .data-sources {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .data-sources h4 {
+            color: #e0e6ed;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .citation-panel {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+
+        .citation-panel h5 {
+            color: #4facfe;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .citation-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 8px;
+        }
+
+        .citation-item {
+            background: rgba(30, 41, 59, 0.3);
+            padding: 6px 8px;
+            border-radius: 4px;
+            border-left: 3px solid #4facfe;
+        }
+
+        /* Controls styling */
+        .controls {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .control-group select, .control-group input {
+            padding: 8px 12px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            color: #e0e6ed;
+            font-size: 0.9rem;
+        }
+
+        /* Unified Comparison Grid styling */
+        .unified-comparison {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .unified-comparison h3 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .comparison-grid {
+            display: grid;
+            /* First column for sensor names, remaining 10 for metrics */
+            grid-template-columns: 200px repeat(10, 1fr);
+            gap: 1px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .grid-header {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 15px 10px;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .grid-cell {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 12px 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+            transition: background 0.3s ease;
+            position: relative;
+        }
+
+        .grid-cell:hover {
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .grid-cell:hover .citation-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .citation-tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 10;
+            max-width: 250px;
+            white-space: normal;
+        }
+
+        .grid-row-header {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 12px 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+            text-align: left; /* Align text to the left for sensor names */
+        }
+
+        .tech-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Sensor icon colors */
+        .tech-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .radar { background: #ef4444; }
+        .rf { background: #3b82f6; }
+        .camera { background: #10b981; }
+        .fusion { background: #f59e0b; }
+        .acoustic { background: #8b5cf6; }
+
+        .coverage-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .coverage-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .metric-value {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        .effectiveness-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin: 0 auto 5px;
+        }
+
+        .cost-indicator {
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.2);
+            margin-bottom: 5px;
+        }
+
+        /* Comparison Chart styling */
+        .comparison-chart {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Bar chart bar colors based on sensor type */
+        .bar {
+            flex: 1;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            min-height: 20px;
+        }
+
+        .bar.radar { background: linear-gradient(to top, #ef4444, #f87171); }
+        .bar.rf { background: linear-gradient(to top, #3b82f6, #60a5fa); }
+        .bar.camera { background: linear-gradient(to top, #10b981, #34d399); }
+        .bar.acoustic { background: linear-gradient(to top, #8b5cf6, #a78bfa); }
+        .bar.fusion { background: linear-gradient(to top, #f59e0b, #fbbf24); }
+
+        .bar:hover {
+            transform: scaleY(1.05);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+
+        /* Legend styling */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .reliability-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        .high-reliability { background: #10b981; }
+        .medium-reliability { background: #f59e0b; }
+        .low-reliability { background: #ef4444; }
+
+        /* Spider Charts specific styling */
+        .spider-charts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .spider-chart-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            min-width: 450px; /* Adjust as needed */
+            max-width: 600px;
+            display: flex; /* Added for flex container */
+            flex-direction: column; /* Arrange content vertically */
+        }
+        .spider-chart-card h3 {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #e0e6ed;
+        }
+        /* Wrapper for Chart.js canvas to control its dimensions */
+        .chart-canvas-wrapper {
+            position: relative; /* Essential for Chart.js responsive behavior */
+            height: 300px; /* Fixed height for the wrapper */
+            width: 100%; /* Ensure it takes full width of its parent */
+            flex-grow: 1; /* Allow it to grow within the flex column */
+        }
+        .chart-canvas-wrapper canvas {
+            position: absolute; /* Take full space of parent */
+            width: 100% !important; /* Important to override Chart.js inline styles sometimes */
+            height: 100% !important; /* Important to override Chart.js inline styles sometimes */
+            top: 0;
+            left: 0;
+        }
+    
+        /* ── Print Styles (Legacy removed, moved to whitepaper-print.css) ── */
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+    <!-- Shared Simulator Assets -->
+    <link rel="stylesheet" href="/css/skhy-sim-common.css">
+    <script src="/js/skhy-sim-common.js"></script>
+</head>
+
+<body>
+
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlays injected via skhy-sim-common.js -->
+
+    <!-- SKHY Watermark -->
+    <div class="skhy-watermark">SKHY<svg viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+    </svg></div>
+
+    <div class="container">
+        <!-- SKHY Header -->
+        <header class="skhy-header">
+            <a href="#" class="skhy-logo">
+                <span>SKHY AI Solutions</span>
+            </a>
+            <div class="document-info">
+                <div class="document-date">September 2025</div>
+            </div>
+        </header>
+
+        <div class="document-title">
+            <h1>SKHY Enhanced Multi-Sensor Detection Coverage Simulation</h1>
+            <p class="document-subtitle">Data-Driven Analysis of Radar, RF, Camera, and Acoustic Technologies</p>
+        </div>
+
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Investment ($M)</label>
+                <input type="range" id="investment" min="0.5" max="20" step="0.5" value="10">
+                <span id="investmentValue">$10.0M</span>
+            </div>
+            <div class="control-group">
+                <label>Environment</label>
+                <select id="environment">
+                    <option value="urban">Urban</option>
+                    <option value="rural">Rural</option>
+                    <option value="border">Border</option>
+                    <option value="marine">Marine</option>
+                    <option value="industrial">Industrial</option>
+                    <option value="arctic">Arctic</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Weather Condition</label>
+                <select id="weather">
+                    <option value="clear">Clear</option>
+                    <option value="rain">Rain</option>
+                    <option value="fog">Fog</option>
+                    <option value="snow">Snow</option>
+                    <option value="storm">Storm</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Threat Level</label>
+                <select id="threat">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="spider-charts-container">
+            <div class="spider-chart-card">
+                <h3>Coverage Across Environments (km²)</h3>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="coverageSpiderChart"></canvas>
+                </div>
+            </div>
+            <div class="spider-chart-card">
+                <h3>Effectiveness Across Environments (%)</h3>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="effectivenessSpiderChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="unified-comparison">
+            <h3>Sensor Technology Comparison</h3>
+            <div class="comparison-grid" id="comparisonGrid">
+                </div>
+        </div>
+
+        <div class="comparison-chart">
+            <h3 class="chart-title">Coverage Effectiveness Comparison</h3>
+            <div class="chart-container">
+                <div class="bar-chart" id="barChart">
+                    </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="tech-icon radar"></div>
+                    <span>Radar Systems</span>
+                </div>
+                <div class="legend-item">
+                    <div class="tech-icon rf"></div>
+                    <span>RF Detection</span>
+                </div>
+                <div class="legend-item">
+                    <div class="tech-icon camera"></div>
+                    <span>Camera/Thermal</span>
+                </div>
+                <div class="legend-item">
+                    <div class="tech-icon acoustic"></div>
+                    <span>Acoustic Sensors</span>
+                </div>
+            </div>
+        </div>
+    <adiv class="data-sources">
+            <h4>Enhanced Data Sources & Methodology (2024-2025):</h4>
+            <p><strong>Market Data:</strong> Radar sensor market ($18.47B-$98.9B by 2035), Ukrainian acoustic network ($5M deployment), industrial sensor pricing analysis<br>
+            <strong>Performance Metrics:</strong> Environmental degradation factors, false alarm rates from field deployments, multi-sensor fusion algorithms<br>
+            <strong>Cost Analysis:</strong> Per-km² coverage costs including hardware, installation, maintenance, and operational expenses</p>
+
+            <div class="citation-panel">
+                <h5>Academic & Industry Citations:</h5>
+                <div class="citation-list">
+                    <div class="citation-item">[1] Automatic Radar-Camera Dataset Generation for Sensor-Fusion (Zendar Inc., 2019)</div>
+                    <div class="citation-item">[2] Multi-sensor data fusion for autonomous flight (Li et al., 2024)</div>
+                    <div class="citation-item">[3] Environmental Perception and Sensor Data Fusion (2013)</div>
+                    <div class="citation-item">[4] Multisensor information fusion: Future of environmental perception (2024)</div>
+                    <div class="citation-item">[5] Sensors Fusion: An Overview (2024)</div>
+                    <div class="citation-item">[6] Efficient Multi-Sensor Fusion for Cooperative Autonomous Vehicles (2024)</div>
+                    <div class="citation-item">[7] Multi-sensor integrated navigation systems (2024)</div>
+                    <div class="citation-item">[8] Maritime radar validation and thermal limitations study (2019)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-registration mt-12 pt-8 border-t border-white/10 text-center pb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="text-left">
+                    <p class="text-[10px] text-sky-500 uppercase font-bold tracking-widest mb-2">Global Headquarters</p>
+                    <p class="text-xs text-slate-400">Skand Dev Technologies (OPC) Pvt Ltd<br>India Registration: DIPP234549<br>Email: contact@skhy.systems</p>
+                </div>
+                <div class="text-left md:border-l md:border-white/10 md:pl-8">
+                    <p class="text-[10px] text-amber-500 uppercase font-bold tracking-widest mb-2">South East Asia Operations</p>
+                    <p class="text-xs text-slate-400">SKhy AI Malaysia Registration Pending<br>Contact: +601116370315<br>Email: malaysia@skhy.systems</p>
+                </div>
+            </div>
+            <p class="mt-8 text-[10px] text-slate-500">&copy; 2025 SKHY AI. All Rights Reserved.</p>
+        </div>
+
+    </div>
+
+    <!-- SKHY AI Branded Print Footer (only visible when printing) -->
+    <div class="skhy-print-footer">
+        <div class="skhy-print-footer-contact">
+            <strong>Skand Dev Technologies (OPC) Pvt Ltd</strong><br>
+            contact@skhy.systems | +91-9335193489 | +601116370315 (MY)
+        </div>
+        <div class="skhy-print-footer-reg">
+            SKHY AI SOLUTIONS — Reg: 202503090021
+        </div>
+    </div>
+
+    <script src="/js/AdvancedSensorDetectionAnalysis.js"></script>
+</body>
+</html>

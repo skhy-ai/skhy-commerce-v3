@@ -1,0 +1,57 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+
+# Local Netlify folder
+.netlify
+
+# Playwright Test Artifacts
+
+/test-results/**/error-context.md
+/playwright-report/data/
+
+
+
+# Obsolete files moved from Code Graph Explorer
+obsolete/
+
+# Python and Pyodide Build Artifacts
+__pycache__/
+*.py[cod]
+*.pyz
+*.pkg
+src/components/academy/build/
+
+# Office lock files
+~$*
+
+# Large generated build files
+src/components/academy/assets/js/pyodide_bundle.js
+src/components/academy/skhy_academy_course_encrypted.html
+src/components/academy/skhy_academy_course_bundled.html
+scratch/
+skhy-vidur-manager
+vector_db/
+*.db

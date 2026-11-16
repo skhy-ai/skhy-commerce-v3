@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script>
+        (function() {
+            var authenticated = false;
+            for (var i = 0; i < localStorage.length; i++) {
+                var k = localStorage.key(i);
+                if (k && (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) && k.indexOf('-auth-token') !== -1) {
+                    try {
+                        var parsed = JSON.parse(localStorage.getItem(k));
+                        if (parsed && (parsed.access_token || parsed.currentSession || parsed.user)) {
+                            authenticated = true;
+                            break;
+                        }
+                    } catch(e) {}
+                }
+            }
+            if (!authenticated && localStorage.getItem('supabase.auth.token')) {
+                authenticated = true;
+            }
+            if (!authenticated) {
+                window.location.href = '/#/login?redirect=' + encodeURIComponent(window.location.pathname);
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy Academy Course — Total Situational Awareness Platform</title>
+    <meta name="description" content="Skhy Academy course documenting the architecture, sensor fusion, acoustic beamforming, RF fingerprinting, and edge AI capabilities of the Skhy autonomous security platform.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="header-left">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="images/logo.png" style="width: 28px; height: 28px; object-fit: contain;" alt="Logo">
+                </div>
+                <div class="logo-text">
+                    <span class="logo-brand">Skhy Academy</span>
+                    <span class="logo-sub">Course Platform</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle" id="themeToggle">
+                <button class="theme-btn active" id="lightBtn" aria-label="Light mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+                <button class="theme-btn" id="darkBtn" aria-label="Dark mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== SIDEBAR ========== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-section-title">Chapters</div>
+        <ul class="chapter-nav" id="chapterNav">
+            <!-- Populated by JS -->
+        </ul>
+    </nav>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="main" id="main">
+        <div class="content-wrapper" id="contentWrapper">
+            <div class="loading">Loading course...</div>
+        </div>
+    </main>
+
+    <script src="assets/js/chapters.js"></script>
+    <script src="assets/js/app.js"></script>
+
+
+    <!-- Fullscreen Modal -->
+    <div class="modal-overlay" id="mermaidModal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="mermaidModalBody" style="width: 100%; display: flex; justify-content: center;"></div>
+        </div>
+    </div>
+
+</body>
+</html>

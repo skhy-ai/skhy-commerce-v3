@@ -1,0 +1,36 @@
+{
+  "steps": [
+    {
+      "id": "drone",
+      "label": "1. Build",
+      "icon": "Plane",
+      "description": "Platform selection and core component build"
+    },
+    {
+      "id": "transmission",
+      "label": "2. Transmission",
+      "icon": "Radio",
+      "description": "Tactical datalink and range optimization",
+      "skipFor": ["none"]
+    },
+    {
+      "id": "positioning",
+      "label": "3. Positioning",
+      "icon": "ShieldAlert",
+      "description": "Anti-jamming and GNSS resilience",
+      "skipFor": ["none"]
+    },
+    {
+      "id": "architecture",
+      "label": "4. Architecture",
+      "icon": "Network",
+      "description": "System integration and wiring"
+    }
+  ],
+  "platformRules": {
+    "none": ["multirotor"],
+    "jamming": ["multirotor", "fixed-wing"],
+    "mountain": ["multirotor", "rover"],
+    "both": ["multirotor", "fixed-wing", "rover"]
+  }
+}

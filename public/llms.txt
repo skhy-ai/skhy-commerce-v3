@@ -1,0 +1,62 @@
+# Skhy AI
+
+> Skhy AI is the operating system for resilient intelligence — a unified, sovereign AI platform built for defense and critical infrastructure operating in denied, degraded, intermittent, and limited (DDIL) environments.
+
+## About
+
+Skhy AI bridges the gap between fragmented point solutions and a unified Platform OS. Where traditional defense tech relies on isolated, single-purpose tools, Skhy AI delivers an extensible, intelligent coordination layer that fuses multi-modal sensor data, operates fully air-gapped, and enforces strict data sovereignty.
+
+## Core Products
+
+- [Vidur AI OS](https://skhy.systems/#core-applications): The unified intelligence coordination layer. Runs on-premises or air-gapped. Fuses acoustic, RF (radio frequency), and computer vision data. Zero reliance on foreign clouds.
+- [Skhy A7 / A16 Acoustic Sensors](https://skhy.systems/#enabling-hardware): High-fidelity microphone arrays for drone detection, gunshot localization, and perimeter monitoring. Supports mast-mounted and drone-integrated deployments.
+- [Mobisense](https://skhy.systems/#enabling-hardware): Portable, rapid-deployment tactical sensor pack for front-line and mobile teams.
+- [Fusion Node](https://skhy.systems/#enabling-hardware): Ruggedized edge server rated for harsh environments, capable of 67 TOPS (Trillions of Operations Per Second), running full Vidur AI inference locally.
+- [SDR Units (Software Defined Radio)](https://skhy.systems/#enabling-hardware): Universal RF monitoring hardware for spectrum dominance, signal localization, and electronic intelligence.
+
+## Key Technology Keywords
+
+Anti-Jamming AI, GNSS Spoofing Detection, Software Defined Radio (SDR), CRPA Antenna, Controlled Reception Pattern Antenna, MANET (Mobile Ad-hoc Network), Sensor Fusion, RF Fusion, Acoustic Detection, Drone Detection, Gunshot Detection, Counter-UAS (Unmanned Aircraft Systems), Edge AI, Edge Inference, Air-Gapped AI, Sovereign AI, Red-Black Separation, FPGA Hardware Guard, MIMO (Multiple-Input Multiple-Output), Tactical Mesh Networking, 67 TOPS Edge Compute, Electronic Warfare (EW), GPS-Denied Navigation, C2 (Command and Control) Mapping, Autonomous Systems, Industrial IoT, Agentic AI.
+
+## Core Technical Capabilities
+
+- **Sensor Fusion**: Merges acoustic, RF, and visual streams. Eliminates up to 87% of false positives.
+- **Air-Gapped Operation**: Zero internet dependency. All AI inference runs locally on Fusion Nodes.
+- **Red-Black Separation**: Hardware-enforced isolation between classified (Red Zone) and standard (Black Zone) data.
+- **Anti-Jamming**: Real-time GPS jamming and RF spoofing detection and mitigation.
+- **MANET Mesh Network**: Self-healing, decentralized communication across drones, ground vehicles, and assets even when cellular/internet is unavailable.
+- **FPGA Hardware Guard**: Physical-layer tamper detection to secure the compute node itself.
+
+## Use Cases
+
+- **Sovereign Defense (APAC)**: Air-gapped AI OS for ASEAN nations to avoid "The Sovereignty Trap" of relying on US/China cloud providers.
+- **Drone Detection & Counter-UAS**: 99.9% detection rate in urban and clutter-rich environments using acoustic + visual fusion where radar fails.
+- **Electronic Warfare (EW) Protection**: Protects tanks, ships, command posts, and logistics from GPS jamming and cheap RF attacks.
+- **Maritime Security**: Onboard AI that navigates using visual/inertial/RF cues when GPS is spoofed on trade routes.
+- **Smart City & Critical Infrastructure**: Physical Firewall for dams, power plants, oil rigs, and smart properties.
+- **Industrial Resilience**: Keeps autonomous robots and logistics operational in GPS-denied or signal-jammed factory and port environments.
+- **Disaster Response**: Coordinates rescue teams via ad-hoc mesh networks when all infrastructure has failed.
+
+## Marketplace & Ecosystem
+
+Skhy AI operates a defense tech marketplace (https://skhy.systems/marketplace) enabling third-party integrations:
+- Hard-kill countermeasures (net guns, RF jammers, laser systems)
+- Partner MANET radios (Silvus, TrellisWare)
+- 3rd-party sensors (legacy radar, chemical sensors)
+- Specialized AI analytics modules (loitering munitions, crowd analysis)
+
+## Pages & Resources
+
+- Homepage: https://skhy.systems
+- Blog: https://skhy.systems/blog
+- Marketplace: https://skhy.systems/marketplace
+- Threat Awareness Demo: https://skhy.systems/demo/threat-awareness
+- Sentry OS Demo: https://skhy.systems/demo/sentry-os
+- Vidur AI Demo: https://skhy.systems/demo/vidur
+- Investor Teaser Deck: https://skhy.systems/teaser-deck
+- Careers: https://skhy.systems/careers
+
+## Contact
+
+- Email: contact@skhy.systems
+- Website: https://skhy.systems

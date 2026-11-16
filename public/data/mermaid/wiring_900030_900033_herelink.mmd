@@ -1,0 +1,78 @@
+graph TD
+  subgraph AIR_VEHICLE ["Vehicular Subsystems"]
+    subgraph 900030 ["Holybro Pixhawk 6C Autopilot"]
+      900030_TELEM1(TELEM1)
+      900030_TELEM1_TX[TX]
+      900030_TELEM1_RX[RX]
+      900030_TELEM1_GND[GND]
+      900030_TELEM1_V5[V5]
+      900030_TELEM2(TELEM2)
+      900030_TELEM2_TX[TX]
+      900030_TELEM2_RX[RX]
+      900030_TELEM2_GND[GND]
+      900030_TELEM2_V5[V5]
+      900030_GPS1(GPS1)
+      900030_GPS1_TX[TX]
+      900030_GPS1_RX[RX]
+      900030_GPS1_GND[GND]
+      900030_GPS1_V5[V5]
+      900030_POWER1(POWER1)
+      900030_POWER1_VCC[VCC]
+      900030_POWER1_GND[GND]
+      900030_MAIN_OUT(MAIN_OUT)
+      900030_MAIN_OUT_PWM[PWM]
+      900030_MAIN_OUT_GND[GND]
+    end
+    subgraph herelink ["Herelink Air Unit"]
+      herelink_BUS1(BUS1)
+      herelink_BUS1_TX[TX]
+      herelink_BUS1_RX[RX]
+      herelink_BUS1_GND[GND]
+      herelink_PWR(PWR)
+      herelink_PWR_VCC[VCC]
+      herelink_PWR_GND[GND]
+      herelink_RF_OUT(RF_OUT)
+      herelink_RF_OUT_ANT1[ANT1]
+      herelink_RF_OUT_ANT2[ANT2]
+    end
+    subgraph 900033 ["ACASOM 20W GaN Telemetry"]
+      900033_SIGNAL_IN(SIGNAL_IN)
+      900033_SIGNAL_IN_SIG[SIG]
+      900033_SIGNAL_IN_GND[GND]
+      900033_RF_OUT(RF_OUT)
+      900033_RF_OUT_ANT[ANT]
+      900033_PWR(PWR)
+      900033_PWR_VCC[VCC]
+      900033_PWR_GND[GND]
+    end
+    subgraph battery ["Power Source (Battery)"]
+      battery_OUTPUT(OUTPUT)
+      battery_OUTPUT_VCC[VCC]
+      battery_OUTPUT_GND[GND]
+    end
+  end
+  subgraph GND_STATION ["Ground Segment"]
+    subgraph herelink_gcs ["Herelink Ground Control"]
+      herelink_gcs_RF_IN(RF_IN)
+      herelink_gcs_RF_IN_ANT1[ANT1]
+      herelink_gcs_RF_IN_ANT2[ANT2]
+    end
+  end
+  battery_OUTPUT_VCC ==>|"Power Rail"| 900030_POWER1_VCC
+  linkStyle 0 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 900030_POWER1_GND
+  linkStyle 1 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_VCC ==>|"VBAT"| herelink_PWR_VCC
+  linkStyle 2 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| herelink_PWR_GND
+  linkStyle 3 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_VCC ==>|"VBAT"| 900033_PWR_VCC
+  linkStyle 4 stroke:#ef4444,stroke-width:2px;
+  battery_OUTPUT_GND ==>|"Ground"| 900033_PWR_GND
+  linkStyle 5 stroke:#ef4444,stroke-width:2px;
+  900030_TELEM1_TX -->|"To Amp"| 900033_SIGNAL_IN_SIG
+  linkStyle 6 stroke:#94a3b8,stroke-width:1px;
+  900033_RF_OUT_ANT -->|"Amp Out"| herelink_BUS1_RX
+  linkStyle 7 stroke:#94a3b8,stroke-width:1px;
+  herelink_RF_OUT_ANT1 -.->|"2.4GHz Video/Telemetry"| herelink_gcs_RF_IN_ANT1
+  linkStyle 8 stroke:#3b82f6,stroke-width:2px,stroke-dasharray: 5 5;

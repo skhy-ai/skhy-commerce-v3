@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy Configurable CRPA Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #0f172a;
+            color: white;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .panel {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #334155;
+            backdrop-filter: blur(4px);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            user-select: none;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar for panel */
+        .panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .panel::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+
+        .panel::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        .controls {
+            top: 20px;
+            left: 20px;
+            width: 340px;
+        }
+
+        .legend {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .readout {
+            top: 20px;
+            right: 20px;
+            width: 260px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 8px 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-green {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-green:hover {
+            background: #059669;
+        }
+
+        .btn-red {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-red:hover {
+            background: #dc2626;
+        }
+
+        .btn-blue {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background: #2563eb;
+        }
+
+        .btn-gray {
+            background: #334155;
+            color: #94a3b8;
+            border: 1px solid #475569;
+        }
+
+        .btn-gray:hover {
+            background: #475569;
+            color: white;
+        }
+
+        .btn-gray.active {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .jammer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .jammer-btn {
+            font-size: 0.75rem;
+            padding: 4px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .signal-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #333;
+            margin-top: 5px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .signal-bar {
+            height: 100%;
+            transition: width 0.1s;
+        }
+
+        .slider-group {
+            margin-bottom: 12px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 2px;
+        }
+
+        input[type=range] {
+            width: 100%;
+            accent-color: #22d3ee;
+        }
+
+        input[type=range]:disabled {
+            accent-color: #475569;
+            opacity: 0.5;
+        }
+
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Band Selector Styles */
+        .band-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+        }
+
+        .band-label {
+            width: 60px;
+            font-weight: bold;
+            color: #cbd5e1;
+        }
+
+        .band-toggles {
+            display: flex;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .band-chk {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            background: #1e293b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #475569;
+            color: #94a3b8;
+            user-select: none;
+        }
+
+        .band-chk:hover {
+            border-color: #64748b;
+        }
+
+        .band-chk input {
+            display: none;
+        }
+
+        .band-chk.active {
+            background: #0f172a;
+            border-color: #22d3ee;
+            color: #22d3ee;
+        }
+
+        /* Constellation specific active colors */
+        .band-chk.gps.active {
+            color: #10b981;
+            border-color: #10b981;
+        }
+
+        .band-chk.glo.active {
+            color: #d946ef;
+            border-color: #d946ef;
+        }
+
+        .band-chk.gal.active {
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+</head>
+
+<body>
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Simulator Assets -->
+    <link rel="stylesheet" href="/css/skhy-sim-common.css">
+    <script src="/js/skhy-sim-common.js"></script>
+    <!-- Overlays injected via skhy-sim-common.js -->
+
+
+
+    <!-- Controls Panel -->
+    <div class="panel controls">
+        <div class="flex items-center gap-3 mb-4">
+            <img src="https://i.ibb.co/mrM2MN7V/skhy-logo.jpg" alt="Skhy Logo"
+                style="width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background: white;">
+            <div>
+                <h2 class="text-lg font-bold text-cyan-400 leading-tight">Skhy Simulator</h2>
+                <div class="text-xs text-gray-400">Multi-Constellation CRPA</div>
+            </div>
+        </div>
+
+        <!-- System Selector (Dropdown) -->
+        <div class="mb-4">
+            <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Select Model</label>
+            <div class="flex gap-2 mt-1">
+                <select id="modelSelect"
+                    class="bg-slate-800 text-sm text-white border border-slate-600 rounded px-2 py-1 flex-1 outline-none focus:border-cyan-400 cursor-pointer">
+                    <!-- Populated by JS -->
+                </select>
+                <a id="modelUrl" href="#" target="_blank"
+                    class="bg-blue-600 hover:bg-blue-500 text-white rounded px-3 py-1 text-xs flex items-center justify-center transition-colors no-underline"
+                    title="View Datasheet">
+                    ↗
+                </a>
+            </div>
+        </div>
+
+        <!-- GNSS Band Selector (New) -->
+        <div class="mb-5 border-b border-gray-700 pb-4">
+            <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2 block">GNSS Frequencies (Per
+                Channel)</label>
+
+            <div class="band-row">
+                <div class="band-label">GPS</div>
+                <div class="band-toggles">
+                    <label class="band-chk gps active" onclick="toggleBand('gps', 'L1', this)">L1</label>
+                    <label class="band-chk gps" onclick="toggleBand('gps', 'L2', this)">L2</label>
+                    <label class="band-chk gps" onclick="toggleBand('gps', 'L5', this)">L5</label>
+                </div>
+            </div>
+
+            <div class="band-row">
+                <div class="band-label">GLO</div>
+                <div class="band-toggles">
+                    <label class="band-chk glo" onclick="toggleBand('glo', 'G1', this)">G1</label>
+                    <label class="band-chk glo" onclick="toggleBand('glo', 'G2', this)">G2</label>
+                </div>
+            </div>
+
+            <div class="band-row">
+                <div class="band-label">GAL</div>
+                <div class="band-toggles">
+                    <label class="band-chk gal" onclick="toggleBand('gal', 'E1', this)">E1</label>
+                    <label class="band-chk gal" onclick="toggleBand('gal', 'E5a', this)">E5a</label>
+                    <label class="band-chk gal" onclick="toggleBand('gal', 'E6', this)">E6</label>
+                </div>
+            </div>
+            <div class="text-[10px] text-gray-500 mt-1 italic">Configured to all spatial channels</div>
+        </div>
+
+        <!-- Specs Configuration -->
+        <div class="mb-5 border-b border-gray-700 pb-4">
+            <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2 block">Anti-Jam
+                Performance</label>
+
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>1-Source Suppression</span>
+                    <span id="val1ch">105 dB</span>
+                </div>
+                <input type="range" id="slider1ch" min="60" max="120" value="105" oninput="updateSpecs()">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>3-Source Suppression</span>
+                    <span id="val3ch">90 dB</span>
+                </div>
+                <input type="range" id="slider3ch" min="60" max="110" value="90" oninput="updateSpecs()">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label" id="label6ch">
+                    <span>6-Source Suppression</span>
+                    <span id="val6ch">80 dB</span>
+                </div>
+                <input type="range" id="slider6ch" min="50" max="100" value="80" oninput="updateSpecs()">
+                <div id="warn6ch" class="text-[10px] text-red-400 hidden mt-1">Not applicable for 4-channel systems
+                </div>
+            </div>
+        </div>
+
+        <!-- Jammers -->
+        <div class="mb-4">
+            <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Interference Sources</label>
+            <div class="jammer-grid" id="jammerGrid">
+                <!-- Generated by JS -->
+            </div>
+            <div class="text-xs text-gray-500 mt-2 text-center">Drag sources with mouse</div>
+        </div>
+
+        <!-- Main Switch -->
+        <div>
+            <button id="toggleNulling" class="btn btn-blue opacity-50 cursor-not-allowed" disabled>Activate
+                Null-Steering</button>
+        </div>
+    </div>
+
+    <!-- Readout Panel -->
+    <div class="panel readout">
+        <h3 class="text-sm font-bold text-gray-300 mb-3 uppercase tracking-wider border-b border-gray-700 pb-2">Signal
+            Monitor</h3>
+
+        <div class="mb-3">
+            <div class="flex justify-between text-xs mb-1">
+                <span>Aggregate GNSS SNR</span>
+                <span id="gpsSnrVal" class="font-mono">28 dB</span>
+            </div>
+            <div class="signal-bar-container">
+                <div id="gpsBar" class="signal-bar bg-green-500" style="width: 80%"></div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <div class="flex justify-between text-xs mb-1">
+                <span>Interference Power</span>
+                <span id="jamBarVal" class="font-mono">0 dB</span>
+            </div>
+            <div class="signal-bar-container bg-gray-800">
+                <div id="jamBar" class="signal-bar bg-red-600" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="text-xs font-mono text-gray-400 space-y-1">
+            <div class="flex justify-between"><span>Model:</span> <span id="readoutModel" class="text-cyan-400">AJGPS
+                    601</span></div>
+            <div class="flex justify-between"><span>Channels:</span> <span id="readoutElements">8 Elements</span></div>
+            <div class="flex justify-between"><span>Active Bands:</span> <span id="readoutBands"
+                    class="text-white">L1</span></div>
+            <div class="flex justify-between"><span>Nulls:</span> <span id="readoutNulls">0</span></div>
+            <div class="mt-2 pt-2 border-t border-gray-700 text-center" id="systemStateText">NOMINAL</div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="panel legend text-xs">
+        <div class="flex items-center mb-1"><span class="status-dot bg-green-400"></span> GPS (L1/L2/L5)</div>
+        <div class="flex items-center mb-1"><span class="status-dot bg-fuchsia-500"></span> GLONASS (G1/G2)</div>
+        <div class="flex items-center mb-1"><span class="status-dot bg-blue-500"></span> Galileo (E1/E5/E6)</div>
+        <div class="flex items-center mb-1"><span class="status-dot bg-red-500"></span> Jammer</div>
+    </div>
+
+    <canvas id="simCanvas"></canvas>
+
+    <!-- SKHY AI Branded Print Footer (only visible when printing) -->
+    <div class="skhy-print-footer">
+        <div class="skhy-print-footer-contact">
+            <strong>Skand Dev Technologies (OPC) Pvt Ltd</strong><br>
+            contact@skhy.systems | +91-9335193489 | +601116370315 (MY)
+        </div>
+        <div class="skhy-print-footer-reg">
+            SKHY AI SOLUTIONS — Reg: 202503090021
+        </div>
+    </div>
+
+    <script src="/js/CRPA-simulator-v3.js"></script>
+</body>
+
+</html>

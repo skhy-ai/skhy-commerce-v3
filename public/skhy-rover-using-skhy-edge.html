@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Skhy Rover: Custom Build & Survival</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* CRT / HUD Effects - Updated for Blue Theme */
+        #hud-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: linear-gradient(rgba(10, 16, 30, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+                linear-gradient(90deg, rgba(0, 100, 255, 0.03), rgba(0, 255, 255, 0.01), rgba(0, 50, 150, 0.03));
+            background-size: 100% 2px, 3px 100%;
+            z-index: 10;
+        }
+
+        #ui-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(0, 255, 255, 0.9);
+            /* Cyan Text */
+            text-shadow: 0 0 5px rgba(0, 100, 255, 0.5);
+            z-index: 11;
+            background: rgba(0, 10, 30, 0.8);
+            /* Navy Background */
+            border: 1px solid #00ffff;
+            /* Neon Cyan Border */
+            padding: 15px;
+            width: 320px;
+            font-size: 12px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+        }
+
+        /* PiP FPV Overlay */
+        #pip-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            height: 240px;
+            border: 1px solid #00ffff;
+            z-index: 11;
+            pointer-events: none;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+            background: rgba(0, 10, 30, 0.2);
+        }
+
+        #pip-label {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            color: #00ffff;
+            font-size: 10px;
+            text-shadow: 0 0 2px #00ffff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 5px;
+        }
+
+        #pip-crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+
+        #pip-crosshair::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            transform: translate(-50%, -50%);
+        }
+
+        h3 {
+            margin: 0 0 10px 0;
+            border-bottom: 1px dashed #00ffff;
+            padding-bottom: 5px;
+            color: #00ffff;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .warning {
+            color: #ff3333;
+            animation: blink 0.2s infinite alternate;
+            font-weight: bold;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0.3;
+            }
+        }
+
+        /* Configuration & Success Screen Styles - Navy & Neon Blue */
+        #start-screen,
+        #success-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 5, 15, 0.95);
+            /* Deep Navy Overlay */
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            color: #00ffff;
+            backdrop-filter: blur(5px);
+        }
+
+        #success-screen {
+            display: none;
+            z-index: 30;
+        }
+
+        /* Fail Screen Styles */
+        #fail-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(20, 0, 0, 0.95);
+            /* Dark Red Overlay */
+            z-index: 30;
+            display: none;
+            /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            color: #ff3333;
+            backdrop-filter: blur(5px);
+        }
+
+        #start-content,
+        #success-content,
+        #fail-content {
+            border: 2px solid #00ffff;
+            padding: 30px;
+            background: rgba(0, 15, 40, 0.95);
+            /* Navy Content Box */
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.2);
+            width: 550px;
+            text-align: left;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        #success-content {
+            text-align: center;
+            border-color: #00ffff;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+        }
+
+        #fail-content {
+            text-align: center;
+            border-color: #ff3333;
+            box-shadow: 0 0 40px rgba(255, 50, 50, 0.4);
+            background: rgba(30, 5, 5, 0.95);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #00ffff;
+            padding-bottom: 15px;
+        }
+
+        #start-content h1 {
+            margin: 0 0 5px 0;
+            letter-spacing: 2px;
+            font-size: 20px;
+            text-shadow: 0 0 10px #00ffff;
+            color: #fff;
+        }
+
+        #start-content h2 {
+            margin: 0 0 20px 0;
+            font-size: 14px;
+            color: #00ffff;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        #success-content h1 {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        #success-content p {
+            color: #e0f0ff;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        #fail-content h1 {
+            color: #ff3333;
+            text-shadow: 0 0 10px #ff3333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        #fail-content p {
+            color: #ffaaaa;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .config-section {
+            margin-bottom: 15px;
+            border: 1px solid #005588;
+            background: #000815;
+            padding: 10px;
+        }
+
+        .config-section h4 {
+            margin: 0 0 10px 0;
+            color: #000;
+            background: #00ffff;
+            padding: 2px 8px;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .config-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #cceeff;
+        }
+
+        select {
+            background: #001122;
+            color: #00ffff;
+            border: 1px solid #0088aa;
+            padding: 5px;
+            font-family: 'Consolas', monospace;
+            width: 65%;
+            font-size: 12px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 5px #00ffff;
+        }
+
+        .spec-box {
+            font-size: 10px;
+            color: #88ccff;
+            background: #001122;
+            padding: 5px;
+            border-left: 2px solid #00ffff;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .highlight {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #start-btn,
+        #restart-btn,
+        #restart-fail-btn {
+            background: transparent;
+            color: #00ffff;
+            border: 2px solid #00ffff;
+            padding: 12px 30px;
+            font-family: 'Consolas', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+            width: 100%;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) inset;
+        }
+
+        #start-btn:hover,
+        #restart-btn:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 30px #00ffff;
+        }
+
+        #restart-btn {
+            color: #00ffff;
+            border-color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            box-shadow: 0 0 10px #00ffff inset;
+        }
+
+        #restart-btn:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 30px #00ffff;
+        }
+
+        #restart-fail-btn {
+            color: #ff3333;
+            border-color: #ff3333;
+            text-shadow: 0 0 5px #ff3333;
+            box-shadow: 0 0 10px #ff3333 inset;
+        }
+
+        #restart-fail-btn:hover {
+            background: #ff3333;
+            color: #000;
+            box-shadow: 0 0 30px #ff3333;
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+    <!-- Shared Simulator Assets -->
+    <link rel="stylesheet" href="/css/skhy-sim-common.css">
+    <script src="/js/skhy-sim-common.js"></script>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+    <!-- Overlays injected via skhy-sim-common.js -->
+
+
+    <div id="hud-layer"></div>
+
+    <div id="pip-overlay">
+        <div id="pip-label">CAM-1 [LIVE]</div>
+        <div id="pip-crosshair"></div>
+    </div>
+
+    <div id="start-screen">
+        <div id="start-content">
+            <div class="logo-container">
+                <h1>SKHY ROVER</h1>
+                <h2>TACTICAL BUILD & DEPLOY</h2>
+            </div>
+
+            <div class="config-section">
+                <h4>1. COMPUTE & FUSION NODE</h4>
+                <div class="config-row">
+                    <label>DEVICE:</label>
+                    <select id="edge-select">
+                        <option value="skhy_light">SKHY Light Edge AI (Maxwell)</option>
+                        <option value="skhy_resilient" selected>SKHY Jamming Resilient (Ampere+FPGA)</option>
+                    </select>
+                </div>
+                <div id="edge-specs" class="spec-box">
+                    Architecture: Heterogeneous Compute (NVIDIA Ampere + Xilinx Zynq)<br>
+                    AI Performance: <span class="highlight">67 TOPS</span> (Superior Vision)<br>
+                    Capabilities: Anti-Jamming GNSS, Spectrum Awareness<br>
+                    Power: 12V DC (High Consumption)
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h4>2. COMMUNICATIONS RELAY MODULE</h4>
+                <div class="config-row">
+                    <label>OUTPUT:</label>
+                    <select id="rf-select">
+                        <option value="5">5W (Eco - Short Range)</option>
+                        <option value="10" selected>10W (Standard)</option>
+                        <option value="20">20W (Mil-Spec - Long Range)</option>
+                        <option value="50">50W (Tactical Network)</option>
+                        <option value="100">100W (Strategic Comms)</option>
+                    </select>
+                </div>
+                <div class="config-row">
+                    <label>RELAY TYPE:</label>
+                    <select id="relay-select">
+                        <option value="ground" selected>Ground Relay</option>
+                        <option value="air">Air Relay</option>
+                        <option value="both">Both Ground & Air Relay</option>
+                    </select>
+                </div>
+                <div id="rf-specs" class="spec-box">
+                    Effective Radius: 50m<br>
+                    Battery Impact: Moderate
+                </div>
+            </div>
+
+            <div class="config-section" style="border-color: #005588;">
+                <h4>MISSION PARAMETERS</h4>
+                <p style="font-size: 11px; margin: 0; color: #88ccff;">DESTINATION: SECTOR 85, -85 // THREAT: KAMIKAZE
+                    DRONES</p>
+            </div>
+
+            <button id="start-btn">DEPLOY ROVER</button>
+        </div>
+    </div>
+
+    <div id="success-screen">
+        <div id="success-content">
+            <h1>MISSION SUCCESS</h1>
+            <p>TARGET ZONE SECURED</p>
+            <p>SKHY NETWORK UPLINK ESTABLISHED</p>
+            <div style="font-size: 12px; color: #88ccff; margin-bottom: 20px;">
+                ALL SYSTEMS NOMINAL. DATA PACKAGE TRANSFERRED.
+            </div>
+            <button class="btn" onclick="location.reload()">RUN NEW SIMULATION</button>
+            <button id="btn-generate-bom" class="btn"
+                style="background: rgba(0, 255, 255, 0.2); border-color: #00ffff; margin-top: 15px;">GENERATE BOM &
+                BUY</button>
+        </div>
+    </div>
+
+    <div id="fail-screen">
+        <div id="fail-content">
+            <h1>MISSION FAILED</h1>
+            <p id="fail-reason">SIGNAL LOST</p>
+            <div style="font-size: 12px; color: #ff8888; margin-bottom: 20px;">
+                CRITICAL SYSTEM FAILURE DETECTED.
+            </div>
+            <button id="restart-fail-btn" onclick="location.reload()">RETRY MISSION</button>
+        </div>
+    </div>
+
+    <div id="ui-container">
+        <h3>SKHY ROVER [ISO-VIEW]</h3>
+        <div class="data-row"><span>BATTERY:</span><span id="ui-battery" style="color: #00ffff">100%</span></div>
+        <div class="data-row"><span>COORDS:</span><span id="ui-coords">0, 0</span></div>
+        <div class="data-row"><span>STATUS:</span><span id="ui-status">CONFIGURING</span></div>
+        <div class="data-row"><span>RF SPECTRUM:</span><span id="ui-rf">CLEAN</span></div>
+        <div class="data-row"><span>THREAT LEVEL:</span><span id="ui-threat">LOW</span></div>
+        <div class="data-row"><span>RF SYSTEM:</span><span id="ui-rf-type">--</span></div>
+        <div class="data-row"><span>VISION:</span><span id="ui-vision-type">--</span></div>
+        <div style="margin-top: 5px; border-top: 1px dashed #005588; padding-top: 3px;">
+            <div class="data-row" style="font-size: 10px; color: #5599bb;"><span>SYSTEM:</span><span
+                    id="ui-system-name">--</span></div>
+        </div>
+    </div>
+
+    <!-- SKHY AI Branded Print Footer (only visible when printing) -->
+    <div class="skhy-print-footer">
+        <div class="skhy-print-footer-contact">
+            <strong>Skand Dev Technologies (OPC) Pvt Ltd</strong><br>
+            contact@skhy.systems | +91-9335193489 | +601116370315 (MY)
+        </div>
+        <div class="skhy-print-footer-reg">
+            SKHY AI SOLUTIONS — Reg: 202503090021
+        </div>
+    </div>
+
+    <script src="/js/skhy_rover_simulator.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+/* Styles for Partner Two-Pager on screen and print-to-PDF */
+
+@media screen {
+  .partner-doc-sheet {
+    width: 100%;
+    max-width: 880px;
+    min-height: 1240px;
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.25), 0 0 15px rgba(0, 0, 0, 0.05);
+    margin: 0 auto;
+    position: relative;
+    box-sizing: border-box;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-size: 11.5px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Hide everything except the partner printable area */
+  nav,
+  footer,
+  .print-hide,
+  .print\:hidden,
+  #tech-chatbot,
+  #visitor-wizard,
+  .cookie-consent,
+  .toaster {
+    display: none !important;
+  }
+
+  .partner-print-root {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .partner-doc-sheet {
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    box-sizing: border-box !important;
+    padding: 10mm 12mm !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  /* Ensure links are rendered clearly as hyperlinks in PDF */
+  .partner-doc-sheet a {
+    text-decoration: underline !important;
+    color: #0284c7 !important;
+  }
+}

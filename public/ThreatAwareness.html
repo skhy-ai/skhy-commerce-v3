@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy AI - Unified Threat Awareness Platform</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a; /* Slate 900 */
+            --accent: #0ea5e9; /* Sky 500 */
+            --military-accent: #334155;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #d1d5db;
+            background-color: #0c111d; /* Premium Navy Dark */
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #f8fafc;
+        }
+        .tech-grid {
+            background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.2;
+        }
+        .clip-path-slant {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+        .spec-table th {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #94a3b8;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Watermark Styles */
+        #watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.03;
+            color: white;
+            text-align: center;
+        }
+        #watermark svg { width: 45vw; height: 45vw; max-width: 600px; max-height: 600px; margin: 0 auto; }
+        
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.2);
+            border-color: #0ea5e9;
+        }
+
+        
+        /* ── Print Styles (Legacy removed, moved to whitepaper-print.css) ── */
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+    <!-- Shared Simulator Assets -->
+    <link rel="stylesheet" href="/css/skhy-sim-common.css">
+    <script src="/js/skhy-sim-common.js"></script>
+</head>
+<body class="antialiased">
+
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlays injected via skhy-sim-common.js -->
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 text-sky-500">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-bold tracking-tight text-white leading-none">SKHY AI</span>
+                        <span class="text-[10px] text-sky-400 font-bold tracking-widest uppercase">Threat Awareness</span>
+                    </div>
+                </div>
+                <div class="hidden lg:flex space-x-8 text-sm font-medium text-slate-400">
+                    <a href="#ecosystem" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">The Ecosystem</a>
+                    <a href="#system-features" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Software</a>
+                    <a href="#acoustic" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Sensors</a>
+                    <a href="#gnss" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Anti-Jam</a>
+                    <a href="#edge-ai" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Edge & Comms</a>
+                </div>
+                <div class="flex flex-col items-end space-y-1">
+                    <a href="mailto:contact@skhy.systems" class="text-sky-400 hover:text-white transition text-[10px] font-bold tracking-wide">
+                        <i data-lucide="mail" class="inline-block w-3 h-3 mr-1"></i> contact@skhy.systems
+                    </a>
+                    <div class="flex gap-3">
+                        <a href="tel:+919335193489" class="text-sky-400 hover:text-white transition text-[10px] font-bold tracking-wide">
+                            <i data-lucide="phone" class="inline-block w-3 h-3 mr-1"></i> +91-9335193489
+                        </a>
+                        <a href="tel:+601116370315" class="text-amber-400 hover:text-white transition text-[10px] font-bold tracking-wide border-l border-slate-700 pl-3">
+                            <i data-lucide="phone" class="inline-block w-3 h-3 mr-1"></i> +601116370315
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-24 bg-slate-900 overflow-hidden clip-path-slant">
+        <div class="absolute inset-0 tech-grid"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-flex items-center space-x-2 bg-slate-800 text-sky-400 px-3 py-1 rounded border border-slate-700 text-xs font-bold tracking-wide uppercase mb-6">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span>Intelligence Everywhere</span>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-white mb-6 leading-none">
+                        Navigate the Denied.<br>
+                        <span class="gradient-text">Detect the Invisible.</span>
+                    </h1>
+                    <p class="text-xl text-slate-400 leading-relaxed mb-8 max-w-lg">
+                        A unified AI platform for multi-domain threat intelligence. Fusing acoustic, RF, and visual data to create a single, undeniable operational picture.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.youtube.com/watch?v=vHDO6vlcqrY" target="_blank" class="bg-white text-slate-900 px-6 py-3 rounded font-bold hover:bg-slate-200 transition flex items-center">
+                            Watch Video <i data-lucide="play-circle" class="ml-2 w-4 h-4"></i>
+                        </a>
+                        <a href="#acoustic" class="border border-slate-600 text-slate-300 px-6 py-3 rounded font-bold hover:bg-slate-800 transition">
+                            Explore Hardware
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <!-- Tech Visualization -->
+                    <div class="relative rounded-xl overflow-hidden border border-slate-700 shadow-2xl shadow-sky-900/20 bg-slate-800">
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop" alt="Technology Visualization" class="w-full h-80 object-cover opacity-60 mix-blend-overlay">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="grid grid-cols-2 gap-4 w-full p-8">
+                                <div class="bg-slate-900/80 backdrop-blur border border-slate-600 p-4 rounded text-center">
+                                    <div class="text-sky-400 text-3xl font-bold font-mono">97%</div>
+                                    <div class="text-slate-400 text-xs uppercase tracking-wider">Classification Accuracy</div>
+                                </div>
+                                <div class="bg-slate-900/80 backdrop-blur border border-slate-600 p-4 rounded text-center">
+                                    <div class="text-sky-400 text-3xl font-bold font-mono">&lt;2%</div>
+                                    <div class="text-slate-400 text-xs uppercase tracking-wider">False Alarm Rate</div>
+                                </div>
+                                <div class="bg-slate-900/80 backdrop-blur border border-slate-600 p-4 rounded text-center">
+                                    <div class="text-sky-400 text-3xl font-bold font-mono">350km</div>
+                                    <div class="text-slate-400 text-xs uppercase tracking-wider">Detection Range</div>
+                                </div>
+                                <div class="bg-slate-900/80 backdrop-blur border border-slate-600 p-4 rounded text-center">
+                                    <div class="text-sky-400 text-3xl font-bold font-mono">&lt;100ms</div>
+                                    <div class="text-slate-400 text-xs uppercase tracking-wider">System Latency</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-32">
+
+        <!-- NEW SECTION: THE ECOSYSTEM (Unified Message) -->
+        <section id="ecosystem" class="scroll-mt-24">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-white mb-4">The Sensor Fusion Ecosystem</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto text-lg">
+                    Skhy isn't just hardware. It's an intelligent mesh where every sensor talks to the others. 
+                    Our Fusion Engine correlates data across modalities to eliminate false positives and track threats with pinpoint precision.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="feature-card p-8 rounded-xl bg-slate-800/50 border border-slate-700 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-sky-500/10 rounded-full blur-2xl"></div>
+                    <div class="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6">
+                        <i data-lucide="radio-receiver" class="text-sky-400 w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">1. Multi-Modal Sensing</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Acoustic arrays listen, RF scanners detect signals, and cameras watch. Data is ingested from Skhy hardware (A7, A16) and third-party sensors simultaneously.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="feature-card p-8 rounded-xl bg-slate-800/50 border border-slate-700 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                    <div class="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6">
+                        <i data-lucide="cpu" class="text-indigo-400 w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">2. AI Fusion Engine</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        The core brain correlates inputs. A sound without a visual might be a false alarm; combined, it's a confirmed track. This fusion reduces nuisance alarms by 87%.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="feature-card p-8 rounded-xl bg-slate-800/50 border border-slate-700 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl"></div>
+                    <div class="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6">
+                        <i data-lucide="crosshair" class="text-emerald-400 w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">3. Actionable Response</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Operators see a unified track on a 3D map, not raw data. The system calculates hazard radii and auto-tasks cameras to the threat location.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW SECTION: THREAT AWARENESS SYSTEM UI -->
+        <section id="system-features" class="scroll-mt-24">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-white">Threat Awareness System</h2>
+                <p class="text-slate-400 mt-2 text-lg">Comprehensive command and control interface for total situational awareness.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Card 1: Perimeters -->
+                <div class="group">
+                    <div class="rounded-xl overflow-hidden border border-slate-700 shadow-lg mb-4 relative bg-slate-800">
+                         <!-- Image Overlay -->
+                        <div class="absolute inset-0 bg-sky-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                        <img src="https://i.ibb.co/jPq79ZfQ/areas-and-perimeters.png" alt="Defining Area and Perimeters" class="w-full h-64 object-cover object-top hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 flex items-center">
+                        <i data-lucide="map" class="text-sky-500 w-5 h-5 mr-2"></i>
+                        Defining Areas & Perimeters
+                    </h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Establish virtual perimeters and secure zones with precision. Operators can draw dynamic geofences on the 3D map to trigger automated alerts for unauthorized entry.
+                    </p>
+                </div>
+
+                <!-- Card 2: Sensor Planning -->
+                <div class="group">
+                    <div class="rounded-xl overflow-hidden border border-slate-700 shadow-lg mb-4 relative bg-slate-800">
+                        <div class="absolute inset-0 bg-sky-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                        <img src="https://res.cloudinary.com/dp19oy6st/image/upload/v1774612310/skhy-assets/i.ibb.co_gqsmgnn4_sensor-planning_znzbja.png" alt="Sensor Planning" class="w-full h-64 object-cover object-top hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 flex items-center">
+                        <i data-lucide="layout-template" class="text-sky-500 w-5 h-5 mr-2"></i>
+                        Sensor Planning
+                    </h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Optimize coverage before deployment. Visualize sensor detection cones, terrain masking, and overlap zones to ensure zero blind spots in critical sectors.
+                    </p>
+                </div>
+
+                <!-- Card 3: Adding Sensor -->
+                <div class="group">
+                    <div class="rounded-xl overflow-hidden border border-slate-700 shadow-lg mb-4 relative bg-slate-800">
+                        <div class="absolute inset-0 bg-sky-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                        <img src="https://res.cloudinary.com/dp19oy6st/image/upload/v1774612313/skhy-assets/i.ibb.co_g3xmv5vv_add-new-sensor_rjfkry.png" alt="Adding New Sensor" class="w-full h-64 object-cover object-center hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 flex items-center">
+                        <i data-lucide="plus-circle" class="text-sky-500 w-5 h-5 mr-2"></i>
+                        Rapid Hardware Integration
+                    </h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Seamlessly scale your network. Add new acoustic arrays or RF sensors in seconds with plug-and-play configuration profiles and instant calibration.
+                    </p>
+                </div>
+
+                <!-- Card 4: Live Threats -->
+                <div class="group">
+                    <div class="rounded-xl overflow-hidden border border-slate-700 shadow-lg mb-4 relative bg-slate-800">
+                        <div class="absolute inset-0 bg-sky-900/10 group-hover:bg-transparent transition-colors z-10"></div>
+                        <img src="https://res.cloudinary.com/dp19oy6st/image/upload/v1774612316/skhy-assets/i.ibb.co_21jgr11p_live-threats_dxo02y.png" alt="Live Threats" class="w-full h-64 object-cover object-center hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 flex items-center">
+                        <i data-lucide="alert-triangle" class="text-sky-500 w-5 h-5 mr-2"></i>
+                        Live Threat Visualization
+                    </h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        A unified common operating picture. Track hostile drones and vehicles in real-time with fused data labels showing speed, classification, and trajectory.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HARDWARE SECTION HEADER -->
+        <div class="border-b border-slate-800 pb-4">
+            <h2 class="text-4xl font-bold text-white">The Sensor Layer</h2>
+            <p class="text-slate-500 mt-2 text-lg">High-precision hardware designed to feed the Skhy AI brain.</p>
+        </div>
+
+        <!-- SECTION 1: ACOUSTIC SENSORS -->
+        <section id="acoustic" class="scroll-mt-24">
+            <div class="flex flex-wrap justify-between items-end mb-8 gap-4">
+                <div class="flex items-center">
+                    <i data-lucide="waves" class="w-8 h-8 text-sky-500 mr-4"></i>
+                    <h3 class="text-2xl font-bold text-white">Acoustic Sentinels</h3>
+                </div>
+                <a href="https://tinyurl.com/skhy-pc-acoustic" target="_blank" class="flex items-center text-sky-400 hover:text-white transition text-sm font-bold uppercase tracking-wide bg-slate-800/50 px-4 py-2 rounded border border-slate-700 hover:border-sky-500 whitespace-nowrap shadow-lg">
+                    <i data-lucide="file-down" class="w-4 h-4 mr-2"></i> Download Catalog
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- SKHY-A7 -->
+                <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg hover:shadow-sky-900/20 transition group overflow-hidden flex flex-col">
+                    <div class="h-1 bg-slate-600 group-hover:bg-sky-500 transition-colors"></div>
+                    <div class="h-48 bg-slate-900 flex items-center justify-center p-4">
+                        <img src="https://i.ibb.co/kgX9nYCP/7-MEMS-Acoustic-sensor-with-sound-board-and-edge-computer.png" alt="SKHY-A7" class="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-8 flex-1">
+                        <div class="flex justify-between items-start mb-6">
+                            <h3 class="text-2xl font-bold text-white">SKHY-A7</h3>
+                            <span class="bg-slate-700 text-slate-300 text-xs font-bold px-2 py-1 rounded uppercase">Compact</span>
+                        </div>
+                        <p class="text-slate-400 mb-6 text-sm">
+                            7-MEMS array. Lightweight standard for autonomous aerial & ground detection. Perfect for mid-sized drones.
+                        </p>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center"><i data-lucide="crosshair" class="w-4 h-4 mr-2 text-sky-500"></i> Drone Range: 2.5 km</li>
+                            <li class="flex items-center"><i data-lucide="crosshair" class="w-4 h-4 mr-2 text-sky-500"></i> Jet Range: 150 km</li>
+                            <li class="flex items-center"><i data-lucide="weight" class="w-4 h-4 mr-2 text-sky-500"></i> Weight: ~240g</li>
+                        </ul>
+                    </div>
+                    <div class="px-8 pb-8 mt-auto">
+                        <details class="group/spec">
+                            <summary class="flex items-center cursor-pointer text-sky-400 text-sm font-bold uppercase tracking-wide hover:text-white transition">
+                                <span>Full Specs</span>
+                                <i data-lucide="chevron-down" class="ml-2 w-4 h-4 transition-transform group-open/spec:rotate-180"></i>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-slate-700 text-xs text-slate-400 space-y-2">
+                                <p><strong class="text-slate-300">Dimensions:</strong> 90x90x70mm</p>
+                                <p><strong class="text-slate-300">Power:</strong> 5V @ 200mA</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- SKHY-A16 -->
+                <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-sky-900/50 rounded-lg shadow-xl relative overflow-hidden transform lg:-translate-y-4 flex flex-col">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-sky-500">
+                        <svg width="120" height="120" viewBox="0 0 100 100" fill="currentColor"><polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39"></polygon></svg>
+                    </div>
+                    <div class="h-1 bg-sky-500"></div>
+                    <div class="h-56 bg-slate-900 flex items-center justify-center p-4">
+                        <img src="https://i.ibb.co/ycG3jprJ/18cm-16-MEMS-sensor.png" alt="SKHY-A16" class="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-8 relative z-10 flex-1">
+                        <div class="flex justify-between items-start mb-6">
+                            <h3 class="text-2xl font-bold text-white">SKHY-A16</h3>
+                            <span class="bg-sky-600 text-white text-xs font-bold px-2 py-1 rounded uppercase">Pro Series</span>
+                        </div>
+                        <p class="text-slate-300 mb-6 text-sm">
+                            16-MEMS array. Maximum sensitivity for high-value asset protection. Detects low-frequency signatures from 350km.
+                        </p>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center"><i data-lucide="crosshair" class="w-4 h-4 mr-2 text-sky-400"></i> Drone Range: 4 km</li>
+                            <li class="flex items-center"><i data-lucide="crosshair" class="w-4 h-4 mr-2 text-sky-400"></i> Jet Range: 250 km</li>
+                            <li class="flex items-center"><i data-lucide="activity" class="w-4 h-4 mr-2 text-sky-400"></i> 16-Channel High Fidelity</li>
+                        </ul>
+                    </div>
+                    <div class="px-8 pb-8 mt-auto z-10">
+                        <details class="group/spec">
+                            <summary class="flex items-center cursor-pointer text-sky-400 text-sm font-bold uppercase tracking-wide hover:text-white transition">
+                                <span>Full Specs</span>
+                                <i data-lucide="chevron-down" class="ml-2 w-4 h-4 transition-transform group-open/spec:rotate-180"></i>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-slate-700 text-xs text-slate-400 space-y-2">
+                                <p><strong class="text-slate-300">Dimensions:</strong> 170x170x100mm</p>
+                                <p><strong class="text-slate-300">Power:</strong> 12V @ 3A</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- MOBISENSE -->
+                <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg hover:shadow-sky-900/20 transition group overflow-hidden flex flex-col">
+                    <div class="h-1 bg-slate-600 group-hover:bg-sky-500 transition-colors"></div>
+                    <div class="h-48 bg-slate-900 flex items-center justify-center p-4">
+                        <img src="https://i.ibb.co/sdqMvbHs/acoustic-RF-sensor-with-metal-telescopic-mast.png" alt="MOBISENSE" class="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-8 flex-1">
+                        <div class="flex justify-between items-start mb-6">
+                            <h3 class="text-2xl font-bold text-white">MOBISENSE</h3>
+                            <span class="bg-slate-700 text-slate-300 text-xs font-bold px-2 py-1 rounded uppercase">Mobile</span>
+                        </div>
+                        <p class="text-slate-400 mb-6 text-sm">
+                            Multi-spectral fusion station. Combines SKHY-7 acoustic sensor with dual LPDA antennas on a rapid-deploy mast.
+                        </p>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center"><i data-lucide="radio" class="w-4 h-4 mr-2 text-sky-500"></i> RF: 400MHz – 8GHz</li>
+                            <li class="flex items-center"><i data-lucide="arrow-up" class="w-4 h-4 mr-2 text-sky-500"></i> 5m Telescopic Mast</li>
+                            <li class="flex items-center"><i data-lucide="zap" class="w-4 h-4 mr-2 text-sky-500"></i> Acoustic + RF Fusion</li>
+                        </ul>
+                    </div>
+                    <div class="px-8 pb-8 mt-auto">
+                        <details class="group/spec">
+                            <summary class="flex items-center cursor-pointer text-sky-400 text-sm font-bold uppercase tracking-wide hover:text-white transition">
+                                <span>Full Specs</span>
+                                <i data-lucide="chevron-down" class="ml-2 w-4 h-4 transition-transform group-open/spec:rotate-180"></i>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-slate-700 text-xs text-slate-400 space-y-2">
+                                <p><strong class="text-slate-300">Antenna:</strong> 2x LPDA</p>
+                                <p><strong class="text-slate-300">Noise:</strong> -89dBm</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ANTI-JAMMING GNSS -->
+        <section id="gnss" class="bg-slate-800/50 p-8 md:p-12 rounded-2xl border border-slate-700 scroll-mt-24">
+            <!-- Header moved out of grid for consistency -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-slate-700/50 pb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">AJGPS Defense Series</h2>
+                    <p class="text-slate-400 mt-2">Secure positioning in contested environments.</p>
+                </div>
+                <a href="https://tinyurl.com/skhy-pc-crpa/" target="_blank" class="flex items-center text-sky-400 hover:text-white transition text-sm font-bold uppercase tracking-wide bg-slate-800/50 px-4 py-2 rounded border border-slate-700 hover:border-sky-500 whitespace-nowrap shadow-lg">
+                    <i data-lucide="file-down" class="w-4 h-4 mr-2"></i> Download Catalog
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-4">
+                    <div class="mb-8 rounded-xl overflow-hidden border border-slate-700 bg-slate-900 p-4">
+                        <img src="https://i.ibb.co/FqkqxxFZ/ajgps601-3.png" alt="AJGPS Defense System" class="w-full h-auto object-contain">
+                    </div>
+                    <p class="text-slate-400 mb-6">
+                        The AJGPS series maintains lock when others fail, resisting up to 7 broadband interference sources with advanced null-steering technology.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded bg-slate-700 text-sky-400 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Anti-Deception</h4>
+                                <p class="text-xs text-slate-500">Algorithms to detect and reject spoofing attacks.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded bg-slate-700 text-sky-400 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i data-lucide="satellite" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Multi-Constellation</h4>
+                                <p class="text-xs text-slate-500">GPS, BDS, GALILEO, and GLONASS.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-8 overflow-x-auto">
+                    <table class="w-full text-sm text-left spec-table">
+                        <thead class="text-xs text-slate-500 bg-slate-800 border-b border-slate-700">
+                            <tr>
+                                <th class="px-4 py-3">Model</th>
+                                <th class="px-4 py-3">Channels</th>
+                                <th class="px-4 py-3">Anti-Interference</th>
+                                <th class="px-4 py-3">Suppression</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700 bg-slate-900/50 text-slate-300">
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-white">AJGPS 301</td>
+                                <td class="px-4 py-4">4 Ch</td>
+                                <td class="px-4 py-4">3 Sources</td>
+                                <td class="px-4 py-4 text-sky-400 font-bold">≥85dB</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-white">AJGPS 302</td>
+                                <td class="px-4 py-4">4 Ch (Ext)</td>
+                                <td class="px-4 py-4">3 Sources</td>
+                                <td class="px-4 py-4 text-sky-400 font-bold">≥85dB</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-white">AJGPS 303</td>
+                                <td class="px-4 py-4">4 Ch (L1/2/5)</td>
+                                <td class="px-4 py-4">3 Sources</td>
+                                <td class="px-4 py-4 text-sky-400 font-bold">≥90dB</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-white">AJGPS 601</td>
+                                <td class="px-4 py-4">8 Ch</td>
+                                <td class="px-4 py-4">6 Sources</td>
+                                <td class="px-4 py-4 text-sky-400 font-bold">≥90dB</td>
+                            </tr>
+                            <tr class="bg-slate-800/30">
+                                <td class="px-4 py-4 font-bold text-white">AJGPS 602</td>
+                                <td class="px-4 py-4">8 Ch</td>
+                                <td class="px-4 py-4">7 Sources</td>
+                                <td class="px-4 py-4 text-sky-400 font-bold">≥85dB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: EDGE AI & MANET -->
+        <section id="edge-ai" class="scroll-mt-24">
+            <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h2 class="text-4xl font-bold text-white">Edge Compute & Comms</h2>
+                    <p class="text-slate-400 mt-2 text-lg">Resilient processing and networking for the tactical edge.</p>
+                </div>
+                <a href="https://tinyurl.com/skhy-pc-edge-ai-adv" target="_blank" class="flex items-center text-sky-400 hover:text-white transition text-sm font-bold uppercase tracking-wide bg-slate-800/50 px-4 py-2 rounded border border-slate-700 hover:border-sky-500 whitespace-nowrap shadow-lg">
+                    <i data-lucide="file-down" class="w-4 h-4 mr-2"></i> Download Catalog
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <!-- Jamming Resilient Node -->
+                <div class="border border-slate-700 rounded-xl p-8 bg-gradient-to-br from-slate-800 to-slate-900 group hover:border-sky-500 transition-colors flex flex-col">
+                    <div class="h-48 bg-slate-950/50 rounded-lg mb-6 flex items-center justify-center p-6 border border-slate-700/50">
+                        <img src="https://i.ibb.co/Vc6GZCnC/skhy-jamming-resilient-AI-edge-RF-fusion-device.png" alt="Fusion Node" class="h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-sky-900/30 rounded-lg flex items-center justify-center mr-4 border border-sky-500/30">
+                            <i data-lucide="cpu" class="w-6 h-6 text-sky-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Jamming Resilient Fusion Node</h3>
+                            <span class="text-xs text-sky-400 font-bold uppercase tracking-wider">Flagship Compute</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                        The physical brain of the ecosystem. A heterogeneous compute unit designed for multi-domain signal intelligence and anti-jamming operations.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i data-lucide="layers" class="w-5 h-5 text-sky-500 mr-3 mt-0.5"></i>
+                            <div>
+                                <strong class="text-white text-sm block">Triple-Core Architecture</strong>
+                                <span class="text-slate-500 text-xs">NVIDIA Ampere GPU + Xilinx Zynq FPGA + ARM Cortex CPUs</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="shield-alert" class="w-5 h-5 text-sky-500 mr-3 mt-0.5"></i>
+                            <div>
+                                <strong class="text-white text-sm block">Advanced Anti-Jamming</strong>
+                                <span class="text-slate-500 text-xs">MIMO Mesh, Split-Frequency (FDD) & Frequency Hopping</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="navigation" class="w-5 h-5 text-sky-500 mr-3 mt-0.5"></i>
+                            <div>
+                                <strong class="text-white text-sm block">Resilient Navigation</strong>
+                                <span class="text-slate-500 text-xs">Mosaic H GPS chip with Anti-Spoofing GNSS + Heading</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="activity" class="w-5 h-5 text-sky-500 mr-3 mt-0.5"></i>
+                            <div>
+                                <strong class="text-white text-sm block">Spectrum Awareness</strong>
+                                <span class="text-slate-500 text-xs">Monitors RF spectrum while communicating (RX2)</span>
+                            </div>
+                        </div>
+                         <div class="mt-6 pt-4 border-t border-slate-700 flex justify-between items-center">
+                            <span class="text-slate-400 text-xs uppercase font-bold">AI Performance</span>
+                            <span class="text-white font-mono text-lg font-bold">67 TOPS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Light Node -->
+                <div class="border border-slate-700 rounded-xl p-8 bg-slate-800 hover:border-slate-500 transition-colors flex flex-col">
+                    <div class="h-48 bg-slate-950/50 rounded-lg mb-6 flex items-center justify-center p-6 border border-slate-700/50">
+                        <img src="https://i.ibb.co/CKqc1B4t/skhy-light-edge-AI.png" alt="Light Node" class="h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center mr-4 border border-slate-600">
+                            <i data-lucide="smartphone" class="w-6 h-6 text-slate-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">SKHY Light Edge Node</h3>
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">SWaP Optimized</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                        Lightweight variant designed for strict Size, Weight, and Power constraints on drones or personnel.
+                    </p>
+
+                    <div class="space-y-4">
+                         <div class="flex items-start">
+                            <i data-lucide="layers" class="w-5 h-5 text-slate-500 mr-3 mt-0.5"></i>
+                            <div>
+                                <strong class="text-white text-sm block">Dual-Core Architecture</strong>
+                                <span class="text-slate-500 text-xs">Nvidia Maxwell GPU + Xilinx Zynq FPGA</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="network" class="w-5 h-5 text-slate-500 mr-3 mt-0.5"></i>
+                            <div>
+                                <strong class="text-white text-sm block">Tactical Comms</strong>
+                                <span class="text-slate-500 text-xs">MIMO Mesh & Split-Frequency Capability</span>
+                            </div>
+                        </div>
+                         <div class="flex items-start">
+                            <i data-lucide="eye" class="w-5 h-5 text-slate-500 mr-3 mt-0.5"></i>
+                            <div>
+                                <strong class="text-white text-sm block">Focused AI</strong>
+                                <span class="text-slate-500 text-xs">Dedicated RF & Acoustic Classification Models</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-700 flex justify-between items-center">
+                            <span class="text-slate-400 text-xs uppercase font-bold">Weight</span>
+                            <span class="text-white font-mono text-lg font-bold">740g</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MANET Table -->
+            <div id="manet" class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden group">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <div class="h-64 lg:h-auto bg-slate-900 relative overflow-hidden">
+                        <img src="https://i.ibb.co/v43cNgXS/command-center-with-VC20.png" alt="VC20 Ground Command Unit" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-r from-slate-900/40 to-transparent"></div>
+                    </div>
+                    <div class="p-8 lg:p-12 relative">
+                        <div class="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                            <i data-lucide="network" class="w-32 h-32 text-white"></i>
+                        </div>
+                        
+                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-2 relative z-10">
+                            <h3 class="text-2xl font-bold text-white">Enhanced MANET Solutions</h3>
+                            <a href="https://tinyurl.com/skhy-pc-manet/" target="_blank" class="flex items-center text-sky-400 hover:text-white transition text-sm font-bold uppercase tracking-wide bg-slate-900/50 px-4 py-2 rounded border border-slate-600 hover:border-sky-500 whitespace-nowrap shadow-lg">
+                                <i data-lucide="file-down" class="w-4 h-4 mr-2"></i> Download Catalog
+                            </a>
+                        </div>
+                        <p class="text-slate-400 mb-8 max-w-2xl relative z-10">
+                            Advanced <strong>Network Layer</strong> mesh architecture. Self-healing and self-forming, featuring Spatial Time-Division Multiplexing to maintain ~33% throughput even after 4+ hops.
+                        </p>
+
+                <div class="overflow-x-auto relative z-10">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-slate-500 uppercase border-b border-slate-700">
+                            <tr>
+                                <th class="px-4 py-3">Model</th>
+                                <th class="px-4 py-3">Role</th>
+                                <th class="px-4 py-3">Range (LOS)</th>
+                                <th class="px-4 py-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700 text-slate-300">
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-sky-400">AB40</td>
+                                <td class="px-4 py-4">High-Altitude Backbone</td>
+                                <td class="px-4 py-4">100–200 km</td>
+                                <td class="px-4 py-4"><span class="bg-green-900 text-green-300 px-2 py-0.5 rounded text-xs">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-sky-400">AB20</td>
+                                <td class="px-4 py-4">Medium ISR</td>
+                                <td class="px-4 py-4">50–100 km</td>
+                                <td class="px-4 py-4"><span class="bg-green-900 text-green-300 px-2 py-0.5 rounded text-xs">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-sky-400">AB2</td>
+                                <td class="px-4 py-4">Tactical Swarm</td>
+                                <td class="px-4 py-4">20–50 km</td>
+                                <td class="px-4 py-4"><span class="bg-green-900 text-green-300 px-2 py-0.5 rounded text-xs">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 font-bold text-sky-400">VC20</td>
+                                <td class="px-4 py-4">Ground Command</td>
+                                <td class="px-4 py-4">100+ km</td>
+                                <td class="px-4 py-4"><span class="bg-green-900 text-green-300 px-2 py-0.5 rounded text-xs">Active</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 p-4 bg-slate-900/50 rounded border border-slate-700">
+                    <h4 class="text-sm font-bold text-white mb-2">Software Bandwidth Upgrades</h4>
+                    <p class="text-xs text-slate-400">
+                        Unlock up to 350 Mbps @ 80MHz Bandwidth (Level 3 Upgrade).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-8 h-8 text-sky-500">
+                             <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold text-white tracking-tight">SKHY AI</span>
+                    </div>
+                    <p class="text-sm leading-relaxed max-w-xs">
+                        Delivering advanced defense intelligence through acoustic superiority, signal resilience, and unified sensor fusion.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-6">Product Lines</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#system-features" class="hover:text-sky-400 transition">Skhy Threat Awareness System</a></li>
+                        <li><a href="#acoustic" class="hover:text-sky-400 transition">Acoustic Sensors (A7/A16)</a></li>
+                        <li><a href="#gnss" class="hover:text-sky-400 transition">Anti-Jamming GNSS</a></li>
+                        <li><a href="#manet" class="hover:text-sky-400 transition">MANET Radios</a></li>
+                        <li><a href="#edge-ai" class="hover:text-sky-400 transition">Edge AI Nodes</a></li>
+                    </ul>
+                </div>
+                <div>
+                  
+                <div>
+                    <h3 class="mb-4 text-lg font-semibold text-white uppercase tracking-wider">Certifications</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <img 
+                                src="https://res.cloudinary.com/dp19oy6st/image/upload/v1774612318/skhy-assets/www.startupindia.gov.in_content_dam_invest-india_newhomepage_dpiit-header_d8xc37.png" 
+                                alt="Startup India" 
+                                class="h-10 w-auto object-contain"
+                                loading="lazy"
+                            />
+                            <span class="text-xs text-slate-500">DPIIT No: DIPP234549</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <span class="inline-flex items-center rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-300 border border-slate-700">
+                                Make in India
+                            </span>
+                            <span class="inline-flex items-center rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-300 border border-slate-700 whitespace-nowrap">
+                                DPIIT Certified
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Updated Footer Copyright -->
+                    <div class="space-y-4">
+                        <p class="text-xs text-slate-600">
+                            &copy; 2025 Skand Dev Technologies (OPC) Pvt Ltd.<br>
+                            SKhy is a trademark of Skand Dev Technologies (OPC) Pvt Ltd.<br>
+                            All Specifications Subject to Change.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-800/50">
+                            <div>
+                                <p class="text-[10px] text-sky-500 uppercase font-bold tracking-widest mb-1">Global HQ</p>
+                                <p class="text-[10px] text-slate-500">Skand Dev Technologies (OPC) Pvt Ltd<br>India Registration: DIPP234549</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-amber-500 uppercase font-bold tracking-widest mb-1">South East Asia HQ</p>
+                                <p class="text-[10px] text-slate-500">SKhy AI Malaysia Registration Pending<br>Contact: +601116370315</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SKHY AI Branded Print Footer (only visible when printing) -->
+    <div class="skhy-print-footer">
+        <div class="skhy-print-footer-contact">
+            <strong>Skand Dev Technologies (OPC) Pvt Ltd</strong><br>
+            contact@skhy.systems | +91-9335193489 | +601116370315 (MY)
+        </div>
+        <div class="skhy-print-footer-reg">
+            SKHY AI SOLUTIONS — Reg: 202503090021
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

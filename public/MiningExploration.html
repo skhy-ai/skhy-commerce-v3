@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy AI - Autonomous Systems Simplified | REE Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://res.cloudinary.com/dp19oy6st/raw/upload/v1774612299/skhy-assets/cdn.jsdelivr.net_npm_chart_kfddww.js"></script>
+    <script src="https://res.cloudinary.com/dp19oy6st/raw/upload/v1774612303/skhy-assets/cdn.jsdelivr.net_npm_chartjs-plugin-annotation_3.0.1_dist_chartjs-plugin-annotation.min_w4wt7n.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --chart-grid-color-light: rgba(0, 0, 0, 0.1);
+            --chart-tick-color-light: #666;
+            --chart-grid-color-dark: rgba(255, 255, 255, 0.1);
+            --chart-tick-color-dark: #c7c7c7;
+            --svg-bg-light: #f9fafb;
+            --svg-bg-dark: #1f2937;
+            --svg-stroke-light: #6b7280;
+            --svg-stroke-dark: #9ca3af;
+            --svg-text-light: #374151;
+            --svg-text-dark: #d1d5db;
+            --svg-accent-blue: #3b82f6;
+            --svg-accent-purple: #8b5cf6;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .accordion-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .transformer-svg {
+            --svg-bg: var(--svg-bg-light);
+            --svg-stroke: var(--svg-stroke-light);
+            --svg-text: var(--svg-text-light);
+        }
+        .dark .transformer-svg {
+            --svg-bg: var(--svg-bg-dark);
+            --svg-stroke: var(--svg-stroke-dark);
+            --svg-text: var(--svg-text-dark);
+        }
+
+        /* ── Print Styles (Legacy removed, moved to whitepaper-print.css) ── */
+        @media print {
+            .accordion-panel { max-height: none !important; overflow: visible !important; }
+            .accordion-button svg { display: none; }
+            .transformer-svg {
+                --svg-bg: #f9fafb !important;
+                --svg-stroke: #6b7280 !important;
+                --svg-text: #374151 !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <!-- Shared Simulator Assets -->
+    <link rel="stylesheet" href="/css/skhy-sim-common.css">
+    <script src="/js/skhy-sim-common.js"></script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-300 antialiased">
+
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlays injected via skhy-sim-common.js -->
+
+
+    <header class="bg-gray-800 dark:bg-gray-900 text-white relative">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
+            <div class="flex justify-center items-center mb-4">
+                 <svg class="h-8 w-8 sm:h-10 sm:w-10 mr-3" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+                 </svg>
+                 <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">SKHY Exploration</h1>
+            </div>
+            <h2 class="text-2xl sm:text-5xl font-bold tracking-tight">Finding Rare Earths with an AI-Powered Hyperspectral Platform</h2>
+            <p class="mt-4 text-base sm:text-xl text-gray-300 max-w-3xl mx-auto">A new paradigm in mineral exploration offering faster, safer, and more precise detection of critical resources from the air.</p>
+        </div>
+        <div class="absolute top-4 right-4 flex items-center space-x-2 z-20 no-print">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <label for="theme-toggle" class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" value="" id="theme-toggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <section class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-3 mb-6">The Critical Quest for Rare Earths</h2>
+            <p class="mb-4">Rare Earth Elements (REEs) are a group of 17 metallic elements essential for modern technologies, including smartphones, electric vehicles, and wind turbines. As global demand surges, the need for efficient and cost-effective exploration methods has become paramount. Traditional exploration often relies on extensive, costly, and time-consuming geophysical surveys and fieldwork. However, recent advancements in remote sensing offer a revolutionary alternative.</p>
+            <p>This whitepaper explores how our AI-powered hyperspectral platform is bridging the technology gap, enabling the direct detection of REE signatures from the sky with unprecedented accuracy and efficiency.</p>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-3 mb-6">Seeing the Unseen: Hyperspectral Bands for REE</h2>
+            <p class="mb-4">A hyperspectral sensor captures data across hundreds of narrow spectral bands. For REE exploration, the most critical regions are within the Visible and Near-Infrared (VNIR) and Short-Wave Infrared (SWIR) parts of the spectrum, typically from 400 nm to 2500 nm.</p>
+            <p class="mb-6">Rare earth elements, particularly Neodymium (Nd), exhibit diagnostic absorption features—sharp dips in the reflectance curve—at very specific wavelengths. As shown in the graph below, key features for Nd in the mineral Bastnaesite appear around <strong>579 nm, 741 nm, 796-801 nm, and 864-889 nm</strong>. By measuring the precise depth and shape of these absorption features across a landscape, we can map the concentration of the target mineral.</p>
+            
+            <div id="chart-container" class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">Interactive: Spectral Signatures of REE-Bearing Minerals</h3>
+                <p class="text-center text-sm mb-4">The graph below shows the spectral reflectance of Bastnaesite and Monazite. The highlighted regions and sharp dips are key absorption features caused by Neodymium (Nd). Click on the data points to learn more.</p>
+                <canvas id="spectralChart"></canvas>
+                <p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-2">Spectral data recreated from USGS spectral library sources.</p>
+            </div>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-3 mb-6">The AI Powerhouse: Our Spatial-Spectral Transformer</h2>
+            <p class="mb-4">A single hyperspectral survey generates terabytes of complex, multi-dimensional data. To unlock the insights hidden within, we use a proprietary AI model: the Spatial-Spectral Transformer. Unlike traditional methods that analyze spatial (the "where") and spectral (the "what") information separately, our transformer architecture processes them jointly, leading to a much deeper contextual understanding.</p>
+            <p class="mb-6">The diagram below illustrates this process. The model deconstructs the raw data, analyzes the relationships between all components simultaneously, and generates a highly informative set of features that powers our anomaly detection and mapping.</p>
+            <div class="w-full overflow-x-auto">
+                <svg viewBox="0 0 800 400" class="transformer-svg min-w-[700px]">
+                    <!-- Definitions for markers and filters -->
+                    <defs>
+                        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--svg-stroke)" />
+                        </marker>
+                    </defs>
+            
+                    <!-- Main Titles -->
+                    <text x="100" y="30" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="var(--svg-text)" text-anchor="middle">1. Input Data</text>
+                    <text x="400" y="30" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="var(--svg-text)" text-anchor="middle">2. Tokenization & Encoding</text>
+                    <text x="675" y="30" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="var(--svg-text)" text-anchor="middle">3. Output</text>
+            
+                    <!-- 1. Hyperspectral Cube -->
+                    <g id="hyperspectral-cube">
+                        <path d="M 50 150 l 50 -25 v 100 l -50 25 z" fill="var(--svg-accent-blue)" stroke="var(--svg-stroke)" opacity="0.6"/>
+                        <path d="M 100 125 l 50 25 v 100 l -50 -25 z" fill="var(--svg-accent-purple)" stroke="var(--svg-stroke)" opacity="0.6"/>
+                        <path d="M 50 150 l 50 25 l 50 -25 l -50 -25 z" fill="#e2e8f0" stroke="var(--svg-stroke)" opacity="0.8"/>
+                        <text x="100" y="270" font-size="12" fill="var(--svg-text)" text-anchor="middle">Hyperspectral Data Cube</text>
+                    </g>
+            
+                    <!-- 2. Tokenization -->
+                    <g id="tokenization">
+                        <!-- Spatial Tokens -->
+                        <rect x="250" y="80" width="80" height="80" rx="8" fill="var(--svg-bg)" stroke="var(--svg-stroke)" stroke-dasharray="4"/>
+                        <rect x="260" y="90" width="25" height="25" fill="var(--svg-accent-blue)" opacity="0.7"/>
+                        <rect x="295" y="90" width="25" height="25" fill="var(--svg-accent-blue)" opacity="0.7"/>
+                        <rect x="260" y="125" width="25" height="25" fill="var(--svg-accent-blue)" opacity="0.7"/>
+                        <rect x="295" y="125" width="25" height="25" fill="var(--svg-accent-blue)" opacity="0.7"/>
+                        <text x="290" y="185" font-size="12" fill="var(--svg-text)" text-anchor="middle">Spatial Patches</text>
+            
+                        <!-- Spectral Tokens -->
+                        <rect x="250" y="200" width="80" height="80" rx="8" fill="var(--svg-bg)" stroke="var(--svg-stroke)" stroke-dasharray="4"/>
+                        <path d="M 260 220 C 270 210, 280 230, 290 220 S 310 210, 320 220" stroke="var(--svg-accent-purple)" stroke-width="2" fill="none"/>
+                        <path d="M 260 240 C 270 250, 280 230, 290 240 S 310 250, 320 240" stroke="var(--svg-accent-purple)" stroke-width="2" fill="none"/>
+                        <path d="M 260 260 C 270 250, 280 270, 290 260 S 310 250, 320 260" stroke="var(--svg-accent-purple)" stroke-width="2" fill="none"/>
+                        <text x="290" y="305" font-size="12" fill="var(--svg-text)" text-anchor="middle">Spectral Vectors</text>
+                    </g>
+            
+                    <!-- Arrows to Transformer -->
+                    <path d="M 155 175 H 240" stroke="var(--svg-stroke)" marker-end="url(#arrow)"/>
+                    <path d="M 340 120 H 450" stroke="var(--svg-stroke)" marker-end="url(#arrow)"/>
+                    <path d="M 340 240 H 450" stroke="var(--svg-stroke)" marker-end="url(#arrow)"/>
+            
+                    <!-- 3. Transformer Block -->
+                    <rect x="460" y="100" width="120" height="160" rx="8" fill="var(--svg-bg)" stroke="var(--svg-stroke)"/>
+                    <text x="520" y="170" font-size="12" font-weight="600" fill="var(--svg-text)" text-anchor="middle">Spatial-Spectral</text>
+                    <text x="520" y="185" font-size="12" font-weight="600" fill="var(--svg-text)" text-anchor="middle">Transformer</text>
+                    <text x="520" y="210" font-size="10" fill="var(--svg-stroke)" text-anchor="middle">(Multi-Head</text>
+                    <text x="520" y="222" font-size="10" fill="var(--svg-stroke)" text-anchor="middle">Self-Attention)</text>
+            
+                    <!-- Arrow to Output -->
+                    <path d="M 590 180 H 625" stroke="var(--svg-stroke)" marker-end="url(#arrow)"/>
+            
+                    <!-- 4. Output -->
+                    <g id="output-embeddings">
+                        <rect x="635" y="140" width="80" height="80" rx="8" fill="var(--svg-bg)" stroke="var(--svg-stroke)"/>
+                        <circle cx="655" cy="160" r="8" fill="var(--svg-accent-blue)" opacity="0.8"/>
+                        <circle cx="675" cy="160" r="8" fill="var(--svg-accent-purple)" opacity="0.8"/>
+                        <circle cx="655" cy="180" r="8" fill="var(--svg-accent-purple)" opacity="0.8"/>
+                        <circle cx="675" cy="180" r="8" fill="var(--svg-accent-blue)" opacity="0.8"/>
+                        <circle cx="665" cy="200" r="8" fill="var(--svg-accent-blue)" opacity="0.8"/>
+                        <text x="675" y="245" font-size="12" fill="var(--svg-text)" text-anchor="middle">Enhanced</text>
+                        <text x="675" y="260" font-size="12" fill="var(--svg-text)" text-anchor="middle">Feature Embeddings</text>
+                    </g>
+                </svg>
+            </div>
+        </section>
+        
+        <section class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-3 mb-6">From Data to Intelligence Map</h2>
+            <p class="mb-4">The ultimate output of the AI-driven workflow is not just a map of anomalies, but an intelligence map. The image below, based on real-world study data, demonstrates this concept. It doesn't just show a single mineral; it overlays the concentrations of multiple key materials:</p>
+            <ul class="list-disc list-inside mb-4 space-y-2">
+                <li><strong class="text-blue-500">Neodymium (Nd) Content:</strong> Shown in a blue-to-yellow-to-red scale, directly highlighting the REE exploration targets.</li>
+                <li><strong class="text-red-500">Iron Oxides:</strong> Mapped in shades of brown, providing crucial geological context.</li>
+                <li><strong class="text-pink-500">Carbonate Content:</strong> Displayed in pink, indicating the host rock for many REE deposits.</li>
+            </ul>
+             <p class="mb-6">This multi-layered approach allows geologists to instantly see not only *where* the potential deposits are, but also *why* they are there, dramatically accelerating decision-making and focusing ground-truthing efforts on the most promising locations.</p>
+            
+            <div class="relative bg-gray-200 dark:bg-gray-800/50 rounded-lg p-2">
+                <img src="https://res.cloudinary.com/dp19oy6st/image/upload/v1774612307/skhy-assets/i.postimg.cc_kvlzrn1d_screenshot-2025-08-08-020401_qgin6v.jpg" alt="Hyperspectral intelligence map showing Neodymium, Iron Oxide, and Carbonate content." class="rounded-md w-full h-auto">
+            </div>
+             <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-2">An map overlaying multiple mineral classifications to create actionable intelligence. Source:Asadzadeh et al., 2024 </p>
+        </section>
+
+        <section class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 border-b-2 border-gray-200 dark:border-gray-700 pb-3 mb-6">Overcoming Exploration Challenges</h2>
+            <p class="mb-6">While incredibly powerful, hyperspectral imaging is not without its challenges. Understanding these factors is key to a successful mission.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <button class="accordion-button w-full text-left font-semibold p-4 rounded-lg bg-gray-100 dark:bg-gray-700 flex justify-between items-center">
+                        How does vegetation affect detection?
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-panel p-4 bg-gray-50 dark:bg-gray-700/50 rounded-b-lg">
+                        <p>Vegetation cover can interfere with REE detection. The chlorophyll in plants has strong absorption features that can mask the subtler signals from minerals below, especially the REE feature at ~580 nm. Therefore, this technology is most effective in arid to semi-arid regions with sparse vegetation cover.</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="accordion-button w-full text-left font-semibold p-4 rounded-lg bg-gray-100 dark:bg-gray-700 flex justify-between items-center">
+                        What is the effect of other minerals?
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-panel p-4 bg-gray-50 dark:bg-gray-700/50 rounded-b-lg">
+                        <p>The host mineralogy and background constituents play a significant role. High concentrations of iron oxides can dampen or suppress REE spectral features. Conversely, bright backgrounds like the calcic carbonatite at Mountain Pass can enhance the detectability of REEs.</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="accordion-button w-full text-left font-semibold p-4 rounded-lg bg-gray-100 dark:bg-gray-700 flex justify-between items-center">
+                        How sensitive is the technology?
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-panel p-4 bg-gray-50 dark:bg-gray-700/50 rounded-b-lg">
+                        <p>The ability to detect REEs depends on multiple factors including Nd concentration, mineral grain size, and sensor quality. While the exact detection limit for a drone system varies, the underlying spectroscopic method is highly sensitive, with lab studies detecting Nd concentrations from 1000 to less than 200 ppm.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 mb-4">The Future of Mineral Exploration is Here</h2>
+            <p class="max-w-2xl mx-auto mb-6">Drone-based hyperspectral imaging, powered by our advanced AI platform, represents a quantum leap in the exploration for Rare Earth Elements. By providing direct, actionable intelligence, this technology empowers companies to reduce risk, lower costs, and accelerate the discovery of the resources that power our future.</p>
+            <div class="flex flex-col items-center space-y-4">
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="mailto:contact@skhy.systems" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors">contact@skhy.systems</a>
+                    <a href="tel:+919335193489" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors">Global: +91-9335193489</a>
+                    <a href="tel:+601116370315" class="inline-block bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg transition-colors">Malaysia: +601116370315</a>
+                </div>
+                <div class="no-print pt-4">
+                    <button id="print-button" class="inline-block bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg transition-colors">Download as PDF</button>
+                </div>
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700 w-full max-w-2xl text-[10px] text-gray-500 space-y-1">
+                    <p>Global Registration: Skand Dev Technologies (OPC) Pvt Ltd | DIPP234549</p>
+                    <p>South East Asia: SKhy AI Malaysia Registration Pending</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer id="contact" class="text-center py-8">
+        <p class="text-sm text-gray-500 dark:text-gray-400">This interactive whitepaper was created by Skhy AI.</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500">Leveraging research from Asadzadeh et al., 2024 and internal design documents.</p>
+    </footer>
+
+    <!-- SKHY AI Branded Print Footer (only visible when printing) -->
+    <div class="skhy-print-footer">
+        <div class="skhy-print-footer-contact">
+            <strong>Skand Dev Technologies (OPC) Pvt Ltd</strong><br>
+            contact@skhy.systems | +91-9335193489 | +601116370315 (MY)
+        </div>
+        <div class="skhy-print-footer-reg">
+            SKHY AI SOLUTIONS — Reg: 202503090021
+        </div>
+    </div>
+
+    <script src="/js/MiningExploration.js"></script>
+</body>
+</html>

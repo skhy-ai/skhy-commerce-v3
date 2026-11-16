@@ -1,0 +1,593 @@
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import * as THREE from 'three';
+import { Calculator, AlertTriangle, ShieldAlert, ShoppingCart, Radio, Loader2 } from 'lucide-react';
+import { useCart } from '../../contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
+
+interface Camera {
+    id: string;
+    name: string;
+    weight_kg: number;
+    price: number;
+}
+
+const FRAMES: Record<string, any> = {
+    "tarot_650": { arms: 4, weight_kg: 0.476, radius: 0.325, class: "medium", min_prop: 10, max_prop: 17, desc: "Tarot Iron Man 650" },
+    "quad_13": { arms: 4, weight_kg: 1.1, radius: 0.33, class: "medium", min_prop: 12, max_prop: 14 },
+    "quad_15": { arms: 4, weight_kg: 1.4, radius: 0.40, class: "medium", min_prop: 14, max_prop: 16 },
+    "quad_17": { arms: 4, weight_kg: 1.8, radius: 0.45, class: "medium", min_prop: 16, max_prop: 18 },
+    "quad_industrial": { arms: 4, weight_kg: 25, radius: 2.0, class: "industrial", min_prop: 30, max_prop: 80 },
+    "hex_industrial": { arms: 6, weight_kg: 35, radius: 2.5, class: "industrial", min_prop: 30, max_prop: 80 },
+    "octo_heavy": { arms: 8, weight_kg: 45, radius: 3.0, class: "industrial", min_prop: 30, max_prop: 80 }
+};
+
+const MOTORS = [
+    { id: "tm_mn4010", name: "T-Motor MN4010 (370KV) - 17\" Specialist", brand: "T-Motor", class: "medium", weight_kg: 0.112, max_thrust_kg: 2.2, voltage_req: "LV", efficiency_hover: 12.0, kv: 370, watts_max: 450, max_amps: 30 },
+    { id: "sunnysky_x4110s", name: "SunnySky X4110S (400KV) - 15-17\"", brand: "SunnySky", class: "medium", weight_kg: 0.149, max_thrust_kg: 2.5, voltage_req: "LV", efficiency_hover: 11.5, kv: 400, watts_max: 577, max_amps: 40 },
+    { id: "emax_mt3510", name: "Emax MT3510 (600KV) - 13-15\"", brand: "Emax", class: "medium", weight_kg: 0.105, max_thrust_kg: 1.8, voltage_req: "LV", efficiency_hover: 10.5, kv: 600, watts_max: 350, max_amps: 25 },
+    { id: "tm_mn4006", name: "T-Motor MN4006 (380KV) - High Eff", brand: "T-Motor", class: "medium", weight_kg: 0.082, max_thrust_kg: 2.5, voltage_req: "LV", efficiency_hover: 14.5, kv: 380, watts_max: 400, max_amps: 20 },
+    { id: "kde_4014xf", name: "KDE Direct 4014XF (380KV)", brand: "KDE", class: "medium", weight_kg: 0.115, max_thrust_kg: 2.8, voltage_req: "LV", efficiency_hover: 13.0, kv: 380, watts_max: 500, max_amps: 35 },
+    { id: "cobra_cm4515", name: "Cobra CM-4515 (400KV)", brand: "Cobra", class: "medium", weight_kg: 0.18, max_thrust_kg: 4.2, voltage_req: "LV", efficiency_hover: 10.0, kv: 400, watts_max: 800, max_amps: 55 },
+    { id: "tm_p80", name: "T-Motor P80 III (100KV)", brand: "T-Motor", class: "industrial", weight_kg: 0.7, max_thrust_kg: 18, voltage_req: "LV", efficiency_hover: 11.0, kv: 100, watts_max: 2000, max_amps: 60 },
+    { id: "hw_p50m", name: "Hobbywing P50M (104kg Thrust)", brand: "Hobbywing", class: "industrial", weight_kg: 6.3, max_thrust_kg: 104, voltage_req: "HV", efficiency_hover: 7.1, kv: 11, watts_max: 15000, max_amps: 80 },
+    { id: "hw_p65m", name: "Hobbywing P65M (130kg Thrust)", brand: "Hobbywing", class: "industrial", weight_kg: 7.5, max_thrust_kg: 130, voltage_req: "HV", efficiency_hover: 6.3, kv: 10, watts_max: 20000, max_amps: 100 }
+];
+
+const PROPS = [
+    { id: "p10_carbon", name: "10-inch Carbon Fiber", size: 10, weight_kg: 0.012 },
+    { id: "p11_carbon", name: "11-inch Carbon Fiber", size: 11, weight_kg: 0.014 },
+    { id: "p12_carbon", name: "12-inch Carbon Fiber", size: 12, weight_kg: 0.016 },
+    { id: "p13_bi_cf", name: "13x4.4 Bi-Blade Carbon Fiber", size: 13, weight_kg: 0.018 },
+    { id: "p13_carbon", name: "13x4.4 Standard CF", size: 13, weight_kg: 0.02 },
+    { id: "p14_carbon", name: "14x4.8 Carbon Fiber", size: 14, weight_kg: 0.025 },
+    { id: "p15_carbon", name: "15x5.0 Carbon Fiber", size: 15, weight_kg: 0.03 },
+    { id: "p17_carbon", name: "17x5.8 Carbon Fiber", size: 17, weight_kg: 0.04 },
+    { id: "p32_carbon", name: "32-inch CF (Agri Standard)", size: 32, weight_kg: 0.25 },
+    { id: "p40_carbon", name: "40-inch CF Heavy Lift", size: 40, weight_kg: 0.45 },
+    { id: "p64_carbon", name: "64-inch Carbon Fiber", size: 64, weight_kg: 0.95 },
+    { id: "p72_carbon", name: "72-inch Carbon Fiber", size: 72, weight_kg: 1.15 }
+];
+
+const BATTERIES = [
+    { id: "moli_6s3p", name: "Molicel P45B 6S3P (13.5Ah)", type: "LV", voltage: 22.2, capacity_wh: 299.7, weight_kg: 1.36 },
+    { id: "moli_6s2p", name: "Molicel P45B 6S2P (9.0Ah)", type: "LV", voltage: 22.2, capacity_wh: 199.8, weight_kg: 0.91 },
+    { id: "revogreen_6s_16000", name: "Revogreen 6S 16000mAh (Ind)", type: "LV", voltage: 22.2, capacity_wh: 355, weight_kg: 2.1 },
+    { id: "euclion_6s_22000", name: "Euclion 6S 22000mAh (Ind)", type: "LV", voltage: 22.2, capacity_wh: 488, weight_kg: 2.5 },
+    { id: "4s_5000", name: "4S LiPo (5000mAh) - Tarot Rec", type: "LV", voltage: 14.8, capacity_wh: 74, weight_kg: 0.5 },
+    { id: "4s_10000", name: "4S LiPo (10000mAh) - Tarot Ext", type: "LV", voltage: 14.8, capacity_wh: 148, weight_kg: 0.95 },
+    { id: "revogreen_12s_22000", name: "Revogreen 12S 22000mAh (Ind)", type: "LV", voltage: 44.4, capacity_wh: 976, weight_kg: 6.2 },
+    { id: "iotech_12s_16000", name: "IoTech 12S 16000mAh (Ind)", type: "LV", voltage: 44.4, capacity_wh: 710, weight_kg: 4.8 },
+    { id: "agri_14s_30000", name: "Generic 14S 30000mAh (Agri)", type: "LV", voltage: 51.8, capacity_wh: 1554, weight_kg: 8.5 },
+    { id: "lv_12s_pack", name: "12S LiPo (22000mAh) - Std", type: "LV", voltage: 44.4, capacity_wh: 976, weight_kg: 6.5 },
+    { id: "hv_400v_pack", name: "Ind. HV Array 400V (10kWh)", type: "HV", voltage: 400, capacity_wh: 10000, weight_kg: 45 }
+];
+
+const ESCS: Record<string, any> = {
+    "20a_generic": { name: "20A Generic", weight_kg: 0.015, type: "single", rating: 20 },
+    "30a_generic": { name: "30A Generic", weight_kg: 0.025, type: "single", rating: 30 },
+    "40a_xrotor": { name: "40A Hobbywing XRotor", weight_kg: 0.026, type: "single", rating: 40 },
+    "50a_4in1": { name: "50A 4-in-1 (BLHeli_32)", weight_kg: 0.015, type: "4in1", rating: 50 },
+    "60a_single": { name: "60A Single (Industrial)", weight_kg: 0.08, type: "single", rating: 60 },
+    "100a_hv": { name: "100A HV FOC (Hobbywing)", weight_kg: 0.20, type: "single", rating: 100 }
+};
+
+const CAMERAS: Camera[] = [
+    { id: "none", name: "None", weight_kg: 0.0, price: 0 },
+    { id: "siyi_zr10", name: "SIYI ZR10 (Optical)", weight_kg: 0.6, price: 650 },
+    { id: "skydroid_h16", name: "Skydroid H16 Cam", weight_kg: 0.3, price: 200 },
+    { id: "paras_eo", name: "Paras Aero EO (Ind)", weight_kg: 0.8, price: 1200 },
+    { id: "ideaforge_ref", name: "IdeaForge Surveillance", weight_kg: 1.2, price: 1800 },
+    { id: "skhy-eo", name: "SKHY EO/IR Gimbal", weight_kg: 1.5, price: 15000 }
+];
+
+const MATERIALS: Record<string, { density: number, color: number }> = {
+    "pvc": { density: 1400, color: 0xe2e8f0 },
+    "steel": { density: 7850, color: 0x334155 },
+    "concrete": { density: 2400, color: 0x78716c }
+};
+
+export default function HeavyLiftSimulator() {
+    const mountRef = useRef<HTMLDivElement>(null);
+    const { addToCart, setIsOpen: setCartOpen } = useCart();
+    const navigate = useNavigate();
+
+    // States
+    const [frameId, setFrameId] = useState("tarot_650");
+    const [motorId, setMotorId] = useState("tm_mn4006");
+    const [propId, setPropId] = useState("p13_carbon");
+    const [escId, setEscId] = useState("20a_generic");
+    const [battId, setBattId] = useState("moli_6s3p");
+    const [camera, setCamera] = useState<Camera>(CAMERAS[0]);
+    const [gps, setGps] = useState<string>('standard');
+    const [telemetry, setTelemetry] = useState<string>('standard');
+    const [pipeMatId, setPipeMatId] = useState("pvc");
+    const [payloadMass, setPayloadMass] = useState(0);
+    const [calcVisible, setCalcVisible] = useState(false);
+    const [isGeneratingBOM, setIsGeneratingBOM] = useState(false);
+
+    // Derived selections
+    const frame = FRAMES[frameId];
+    const availableMotors = MOTORS.filter(m => m.class === frame.class);
+    const availableProps = PROPS.filter(p => p.size >= frame.min_prop && p.size <= frame.max_prop);
+
+    // Ensure selected motor/prop are valid for frame
+    useEffect(() => {
+        if (!availableMotors.find(m => m.id === motorId)) {
+            setMotorId(availableMotors[0]?.id || "");
+        }
+        if (!availableProps.find(p => p.id === propId)) {
+            setPropId(availableProps[0]?.id || "");
+        }
+    }, [frameId, availableMotors, availableProps, motorId, propId]);
+
+    const motor = MOTORS.find(m => m.id === motorId) || availableMotors[0];
+    const prop = PROPS.find(p => p.id === propId) || availableProps[0];
+    const batt = BATTERIES.find(b => b.id === battId)!;
+    const escData = ESCS[escId];
+    const camData = camera; // Use the camera object from state
+
+    // Calculations
+    const calcData = useMemo(() => {
+        if (!motor || !prop || !batt) return null;
+
+        const motorMass = motor.weight_kg * frame.arms;
+        const propMass = prop.weight_kg * frame.arms;
+        const escMass = escData.type === '4in1' ? escData.weight_kg : escData.weight_kg * frame.arms;
+        const gpsMass = gps === 'anti-jam' ? 0.120 : 0.050; // 120g for anti-jam, 50g for standard
+        const telemetryMass = telemetry === 'high-gain' ? 0.080 : 0.030; // 80g for high-gain, 30g for standard
+
+        const totalPayload = payloadMass + camData.weight_kg;
+        const totalAUW = frame.weight_kg + motorMass + propMass + batt.weight_kg + totalPayload + escMass + gpsMass + telemetryMass;
+        const totalMaxThrust = motor.max_thrust_kg * frame.arms;
+
+        const hoverThrottle = totalMaxThrust > 0 ? (totalAUW / totalMaxThrust) * 100 : 0;
+        const hoverPowerW = (totalAUW * 1000) / motor.efficiency_hover;
+
+        let flightTimeHrs = batt.capacity_wh / hoverPowerW;
+        flightTimeHrs *= 0.8; // Derate
+
+        const rpmLoad = motor.kv * batt.voltage * 0.75;
+        const pitchInches = prop.size * 0.4;
+        let topSpeedKmh = rpmLoad * pitchInches * 0.001524;
+        if (frame.class === 'industrial') topSpeedKmh *= 0.6; else topSpeedKmh *= 0.8;
+
+        const cruiseSpeed = topSpeedKmh * 0.6;
+        const rangeKm = flightTimeHrs * cruiseSpeed;
+
+        const voltageMismatch = (motor.voltage_req !== batt.type);
+        const overweight = hoverThrottle > 75;
+        const escMismatch = motor.max_amps > escData.rating;
+
+        // Tarot checks
+        let tarotStatus = null;
+        if (frameId === 'tarot_650') {
+            const is4S = (Math.abs(batt.voltage - 14.8) < 1);
+            const is6S = (Math.abs(batt.voltage - 22.2) < 1);
+            const is20A = (escData.rating <= 20);
+            const is30A = (escData.rating > 20 && escData.rating <= 30);
+            const watts = motor.watts_max || 400;
+
+            if (watts <= 250 && is20A && is4S && prop.size <= 12) {
+                tarotStatus = { text: "✅ Recommended (GoPro Config)", color: "text-emerald-400", bg: "bg-emerald-900 border-emerald-500" };
+            } else if (watts <= 400 && is30A && is4S && prop.size <= 14) {
+                tarotStatus = { text: "✅ General (SLR-Like Config)", color: "text-emerald-400", bg: "bg-emerald-900 border-emerald-500" };
+            } else if (watts >= 400 && is6S && prop.size >= 14) {
+                tarotStatus = { text: "⚠️ Not Recommended (Frame Stress)", color: "text-amber-400", bg: "bg-amber-900 border-amber-500" };
+            } else {
+                tarotStatus = { text: "ℹ️ Custom Config (Check Specs)", color: "text-sky-400", bg: "bg-slate-800 border-sky-500" };
+            }
+        }
+
+        return {
+            motorMass, propMass, escMass, gpsMass, telemetryMass, totalPayload, totalAUW, totalMaxThrust, hoverThrottle, hoverPowerW,
+            flightTimeHrs, rangeKm, voltageMismatch, overweight, escMismatch, tarotStatus
+        };
+    }, [frame, motor, prop, escData, batt, camData, payloadMass, frameId, gps, telemetry]);
+
+    const isConfigValid = useMemo(() => {
+        if (!calcData) return false;
+        return !calcData.escMismatch && !calcData.voltageMismatch && !calcData.overweight;
+    }, [calcData]);
+
+    const handleGenerateBOM = async () => {
+        if (!isConfigValid) return;
+        setIsGeneratingBOM(true);
+        try {
+            // Find equivalent products in marketplace
+            // Hardcoded IDs mapping for the demo based on product catalog
+
+            // Frame: Tarot 650
+            if (frameId === 'tarot_650') {
+                await addToCart(900000, 1, { id: 900000, name: 'Tarot IRON MAN 650 Frame', base_price: 105 });
+            }
+            // Motor: T-Motor P80 III
+            if (motorId === 'tm_p80') {
+                await addToCart(900001, frame.arms, { id: 900001, name: 'T-Motor P80 III (KV100) Motor', base_price: 200 }); // one per arm
+            }
+            // Camera: SIYI ZR10
+            if (camera.id === 'skhy-eo') {
+                const cameraProdId = 900002; // Example product ID for SKHY EO/IR Gimbal
+                await addToCart(cameraProdId, 1, { id: cameraProdId, name: camera.name, base_price: 15000 });
+            }
+
+            if (gps === 'anti-jam') {
+                await addToCart(900007, 1, { id: 900007, name: 'SKHY Anti-Jamming GPS Array', base_price: 2500 });
+            }
+
+            if (telemetry === 'high-gain') {
+                await addToCart(900008, 1, { id: 900008, name: 'SKHY High-Gain Rx/Tx Telemetry Module', base_price: 1200 });
+            }
+
+            // Battery: Molicel P45B
+            if (battId === 'moli_6s3p') {
+                await addToCart(900003, 1, { id: 900003, name: 'Molicel P45B 6S3P Battery', base_price: 150 });
+            }
+
+            setCartOpen(true);
+            navigate('/marketplace', { state: { showCartBox: true } });
+
+        } catch (error) {
+            console.error("Failed to generate BOM:", error);
+        } finally {
+            setIsGeneratingBOM(false);
+        }
+    };
+
+    // Three.js
+    const threeRef = useRef<{ scene?: THREE.Scene, camera?: THREE.PerspectiveCamera, renderer?: THREE.WebGLRenderer, droneGroup?: THREE.Group, pipeMesh?: THREE.Mesh, camGroup?: THREE.Group, propsArr: THREE.Mesh[] }>({ propsArr: [] });
+
+    useEffect(() => {
+        if (!mountRef.current) return;
+        const width = mountRef.current.clientWidth;
+        const height = mountRef.current.clientHeight;
+
+        // Setup scene, camera, renderer
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x4b5563);
+        scene.fog = new THREE.Fog(0x0f172a, 10, 60);
+
+        const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+        camera.position.set(5, 4, 8);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.shadowMap.enabled = true;
+        mountRef.current.appendChild(renderer.domElement);
+
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
+        scene.add(hemiLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(10, 20, 10);
+        scene.add(dirLight);
+
+        const grid = new THREE.GridHelper(100, 100, 0x334155, 0x1e293b);
+        scene.add(grid);
+
+        const droneGroup = new THREE.Group();
+        scene.add(droneGroup);
+
+        threeRef.current = { scene, camera, renderer, droneGroup, propsArr: [] };
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            threeRef.current.propsArr.forEach(p => p.rotation.y += 0.3);
+            const time = Date.now() * 0.001;
+            if (threeRef.current.droneGroup) threeRef.current.droneGroup.position.y = Math.sin(time) * 0.1;
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        const handleResize = () => {
+            if (!mountRef.current) return;
+            camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+        };
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            if (mountRef.current && renderer.domElement) {
+                mountRef.current.removeChild(renderer.domElement);
+            }
+            renderer.dispose();
+        };
+    }, []);
+
+    // Sync 3D model with state
+    useEffect(() => {
+        const { droneGroup } = threeRef.current;
+        if (!droneGroup) return;
+
+        while (droneGroup.children.length > 0) droneGroup.remove(droneGroup.children[0]);
+        threeRef.current.propsArr = [];
+
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.4 });
+        const armMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5 });
+        const motorMat = new THREE.MeshStandardMaterial({ color: 0xcc9900, metalness: 0.8 });
+        const propMat = new THREE.MeshStandardMaterial({ color: 0x111111, transparent: true, opacity: 0.9 });
+        const pipeMat = new THREE.MeshStandardMaterial({ color: MATERIALS[pipeMatId].color, roughness: 0.2 });
+        const camMat = new THREE.MeshStandardMaterial({ color: 0x000000, metalness: 0.9 });
+
+        const coreScale = frame.radius * 0.3;
+        const core = new THREE.Mesh(new THREE.CylinderGeometry(coreScale, coreScale, 0.2, 8), bodyMat);
+        droneGroup.add(core);
+
+        const radius = frame.radius;
+        for (let i = 0; i < frame.arms; i++) {
+            const angle = (i / frame.arms) * Math.PI * 2;
+            const armGroup = new THREE.Group();
+            armGroup.rotation.y = angle;
+
+            const arm = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, radius), armMat);
+            arm.position.z = radius / 2;
+            armGroup.add(arm);
+
+            const motorMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.15, 16), motorMat);
+            motorMesh.position.set(0, 0.1, radius);
+            armGroup.add(motorMesh);
+
+            const propSizeNum = prop.size; // prop.size is already a number
+            // Scale prop length relative to size. A 12-inch prop is base scale 1.0. We multiply by 0.5 to keep it visually proportional to the frame mesh.
+            const scaleFactor = (propSizeNum / 12) * 0.5;
+            const propLen = radius * 0.9 * scaleFactor;
+
+            const propGeo = new THREE.BoxGeometry(propLen, 0.05, 0.4);
+            const propMesh = new THREE.Mesh(propGeo, propMat);
+            propMesh.position.set(0, 0.2, radius);
+            armGroup.add(propMesh);
+
+            threeRef.current.propsArr.push(propMesh);
+            droneGroup.add(armGroup);
+        }
+
+        const fixedLength = (frame.class === 'medium') ? 2.0 : 4.0;
+        const density = MATERIALS[pipeMatId].density;
+        const volume = payloadMass / density;
+        let r = Math.sqrt(volume / (Math.PI * fixedLength));
+        if (r < 0.02) r = 0.02; if (r > 0.5) r = 0.5;
+
+        const pipeMesh = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 32), pipeMat);
+        pipeMesh.scale.set(r, fixedLength, r);
+        pipeMesh.rotation.z = Math.PI / 2;
+        pipeMesh.position.y = -1.0;
+        droneGroup.add(pipeMesh);
+
+        if (camera.id !== 'none') {
+            const camGroup = new THREE.Group();
+            const gimbalBody = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), camMat);
+            camGroup.add(gimbalBody);
+            const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.1, 16), camMat);
+            lens.rotation.x = Math.PI / 2;
+            lens.position.z = 0.1;
+            camGroup.add(lens);
+            camGroup.position.set(0, -0.3, radius * 0.4);
+            droneGroup.add(camGroup);
+        }
+
+    }, [frame, payloadMass, pipeMatId, camera]);
+
+    return (
+        <div className="bg-slate-900 text-white min-h-screen overflow-hidden flex relative">
+            <div ref={mountRef} className="absolute inset-0 z-0" />
+
+            <div className="w-[440px] h-screen overflow-y-auto bg-slate-900/95 backdrop-blur border-r border-slate-700 p-6 z-10 flex-shrink-0 relative">
+                <div className="mb-6">
+                    <div className="inline-block px-3 py-1 border-2 border-sky-400 text-sky-400 font-black text-2xl tracking-[3px] rounded mb-2">SKHY</div>
+                    <h1 className="text-lg font-bold uppercase tracking-wider">Industrial Logistics</h1>
+                    <p className="text-xs text-slate-400">Medium & Heavy Lift Simulator</p>
+                </div>
+
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-bold border-b border-slate-700 pb-1 mb-3 mt-6">1. Airframe & Propulsion</div>
+
+                <label className="text-xs text-slate-300 block mb-1">Frame Class</label>
+                <select value={frameId} onChange={e => setFrameId(e.target.value)} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-3 outline-none focus:border-sky-400">
+                    <optgroup label="Medium Lift (Foldable/Inspection)">
+                        <option value="tarot_650">Tarot IRON MAN 650 (Foldable)</option>
+                        <option value="quad_13">13-inch Frame (Medium)</option>
+                        <option value="quad_15">15-inch Frame (Medium+)</option>
+                        <option value="quad_17">17-inch Frame (Endurance)</option>
+                    </optgroup>
+                    <optgroup label="Industrial Heavy Lift (Cargo)">
+                        <option value="quad_industrial">Industrial Quad (2.0m)</option>
+                        <option value="hex_industrial">Industrial Hex (2.5m)</option>
+                        <option value="octo_heavy">Heavy Lift Octo (3.0m)</option>
+                    </optgroup>
+                </select>
+
+                <label className="text-xs text-slate-300 block mb-1">Motor System (Filtered)</label>
+                <select value={motorId} onChange={e => setMotorId(e.target.value)} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-3 outline-none focus:border-sky-400">
+                    {availableMotors.map(m => <option key={m.id} value={m.id}>{m.name} - {m.max_thrust_kg}kg</option>)}
+                </select>
+
+                <label className="text-xs text-slate-300 block mb-1">Propeller (Filtered)</label>
+                <select value={propId} onChange={e => setPropId(e.target.value)} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-3 outline-none focus:border-sky-400">
+                    {availableProps.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+
+                <label className="text-xs text-slate-300 block mb-1">ESC (Electronic Speed Controller)</label>
+                <select value={escId} onChange={e => setEscId(e.target.value)} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-3 outline-none focus:border-sky-400">
+                    {Object.entries(ESCS).map(([id, esc]) => <option key={id} value={id}>{esc.name}</option>)}
+                </select>
+
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-bold border-b border-slate-700 pb-1 mb-3 mt-6">2. Power Plant</div>
+                <label className="text-xs text-slate-300 block mb-1">Battery Architecture</label>
+                <select value={battId} onChange={e => setBattId(e.target.value)} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-3 outline-none focus:border-sky-400">
+                    {BATTERIES.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
+
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-bold border-b border-slate-700 pb-1 mb-3 mt-6">3. Payloads & Optics</div>
+                <label className="text-xs text-slate-300 block mb-1">Visual Intelligence (EO/IR)</label>
+                <select value={camera.id} onChange={e => setCamera(CAMERAS.find((c: Camera) => c.id === e.target.value) || CAMERAS[0])} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-3 outline-none focus:border-sky-400">
+                    {CAMERAS.map((c: Camera) => <option key={c.id} value={c.id}>{c.name} {c.weight_kg > 0 && `- ${c.weight_kg}kg`}</option>)}
+                </select>
+
+                <label className="text-xs text-slate-300 block mb-1">Pipe Payload Material</label>
+                <select value={pipeMatId} onChange={e => setPipeMatId(e.target.value)} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-3 outline-none focus:border-sky-400">
+                    <option value="pvc">PVC / Plastic (Light)</option>
+                    <option value="steel">Steel / Iron (Heavy)</option>
+                    <option value="concrete">Concrete (Very Heavy)</option>
+                </select>
+
+                <label className="text-xs text-slate-300 block mb-1">Payload Mass (kg)</label>
+                <input type="number" min="0" max="500" step="0.1" value={payloadMass} onChange={e => setPayloadMass(Number(e.target.value))} className="w-full bg-slate-800 border-slate-600 rounded p-2 mb-2 outline-none focus:border-sky-400" />
+                <input type="range" min="0" max="100" step="0.5" value={payloadMass} onChange={e => setPayloadMass(Number(e.target.value))} className="w-full h-1 bg-slate-700 rounded-lg accent-sky-400 mb-6" />
+
+                {/* Avionics & Resiliency */}
+                <div className="mt-8 pt-6 border-t border-slate-700">
+                    <h3 className="text-lg font-bold text-sky-400 mb-4 flex items-center gap-2">
+                        <ShieldAlert className="w-5 h-5" />
+                        Avionics & Resiliency
+                    </h3>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm text-slate-400 mb-1">GPS & Navigation</label>
+                            <select
+                                value={gps}
+                                onChange={(e) => setGps(e.target.value)}
+                                className="w-full bg-slate-800 border border-slate-600 rounded-lg p-2.5 text-white outline-none focus:ring-1 focus:ring-sky-400"
+                            >
+                                <option value="standard">Standard GNSS (M8N)</option>
+                                <option value="anti-jam">SKHY Anti-Jamming CRPA Array (+120g)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div className="flex items-center justify-between mb-1">
+                                <label className="block text-sm text-slate-400">Rx/Tx Telemetry</label>
+                                <a
+                                    href="/plan-scenario?tab=rf-jammer"
+                                    title="Simulate required Rx/Tx in RF Jammer"
+                                    className="text-slate-500 hover:text-sky-400 transition-colors flex items-center pr-1"
+                                >
+                                    <span className="text-xs mr-1 opacity-75">Simulate</span>
+                                    <Radio className="w-3.5 h-3.5" />
+                                </a>
+                            </div>
+                            <select
+                                value={telemetry}
+                                onChange={(e) => setTelemetry(e.target.value)}
+                                className="w-full bg-slate-800 border border-slate-600 rounded-lg p-2.5 text-white outline-none focus:ring-1 focus:ring-sky-400"
+                            >
+                                <option value="standard">Standard Telemetry (915MHz)</option>
+                                <option value="high-gain">SKHY High-Gain Resilient Link (+80g)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div className="flex justify-between items-center cursor-pointer border-b border-slate-700 pb-1 mb-3 mt-6" onClick={() => setCalcVisible(!calcVisible)}>
+                    <div className="text-xs uppercase tracking-wider text-slate-400 font-bold">4. Performance Telemetry</div>
+                    <span className="text-[10px] text-sky-400 bg-sky-900/50 px-2 py-0.5 rounded border border-sky-400/30">View Logic</span>
+                </div>
+
+                {calcVisible && calcData && (
+                    <div className="bg-slate-950 p-3 rounded font-mono text-xs text-slate-300 border border-slate-700 mb-4 space-y-1">
+                        <div className="flex justify-between"><span className="text-slate-500">Formula:</span> <span>Flight Time = (Wh * 0.8) / Power</span></div>
+                        <div className="flex justify-between"><span className="text-slate-500">Power (W):</span> <span>{Math.round(calcData.hoverPowerW)}</span></div>
+                        <div className="flex justify-between"><span className="text-slate-500">Battery (Wh):</span> <span>{Math.round(batt.capacity_wh)}</span></div>
+                        <div className="border-t border-slate-800 my-2"></div>
+                        <div className="text-slate-500">AUW Breakdown:</div>
+                        <div className="flex justify-between ml-2"><span className="text-slate-500">Frame:</span> <span>{Math.round(frame.weight_kg * 1000)}g</span></div>
+                        <div className="flex justify-between ml-2"><span className="text-slate-500">Motors:</span> <span>{Math.round(calcData.motorMass * 1000)}g</span></div>
+                        <div className="flex justify-between ml-2"><span className="text-slate-500">Batt:</span> <span>{Math.round(batt.weight_kg * 1000)}g</span></div>
+                        <div className="flex justify-between ml-2"><span className="text-slate-500">ESC:</span> <span>{Math.round(calcData.escMass * 1000)}g</span></div>
+                        <div className="flex justify-between ml-2"><span className="text-slate-500">Cam/Pay:</span> <span>{Math.round(calcData.totalPayload * 1000)}g</span></div>
+                        <div className="flex justify-between ml-2"><span className="text-slate-500">GPS:</span> <span>{Math.round(calcData.gpsMass * 1000)}g</span></div>
+                        <div className="flex justify-between ml-2"><span className="text-slate-500">Telemetry:</span> <span>{Math.round(calcData.telemetryMass * 1000)}g</span></div>
+                    </div>
+                )}
+
+                {calcData && (
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                        <div className="bg-slate-800 p-3 rounded border-l-4 border-blue-500">
+                            <span className="text-[10px] text-slate-400 block mb-1">Total AUW</span>
+                            <span className="text-lg font-bold text-white">{calcData.totalAUW.toFixed(2)} kg</span>
+                        </div>
+                        <div className="bg-slate-800 p-3 rounded border-l-4 border-green-500">
+                            <span className="text-[10px] text-slate-400 block mb-1">Max Thrust</span>
+                            <span className="text-lg font-bold text-green-400">{calcData.totalMaxThrust.toFixed(1)} kg</span>
+                        </div>
+                        <div className="bg-slate-800 p-3 rounded border-l-4 border-blue-500">
+                            <span className="text-[10px] text-slate-400 block mb-1">Hover Throttle</span>
+                            <span className="text-lg font-bold text-white">{calcData.hoverThrottle.toFixed(1)}%</span>
+                        </div>
+                        <div className="bg-slate-800 p-3 rounded border-l-4 border-sky-400">
+                            <span className="text-[10px] text-slate-400 block mb-1">Est. Range</span>
+                            <span className="text-lg font-bold text-sky-400">{calcData.rangeKm.toFixed(1)} km</span>
+                        </div>
+                    </div>
+                )}
+
+                {calcData?.escMismatch && (
+                    <div className="bg-red-950 p-3 rounded border-l-4 border-red-500 mb-2">
+                        <div className="flex items-center gap-2 text-red-400 mb-1 font-bold text-xs"><ShieldAlert className="w-4 h-4" /> ESC SAFETY ALERT</div>
+                        <div className="text-xs text-red-200">DANGER: ESC Under-rated! Motor needs {motor.max_amps}A, ESC is {escData.rating}A.</div>
+                    </div>
+                )}
+
+                {calcData?.voltageMismatch && (
+                    <div className="bg-red-950 p-3 rounded border-l-4 border-red-500 mb-2">
+                        <div className="flex items-center gap-2 text-red-400 mb-1 font-bold text-xs"><AlertTriangle className="w-4 h-4" /> Voltage Mismatch</div>
+                        <div className="text-xs text-red-200">Warning: Motor needs {motor.voltage_req}</div>
+                    </div>
+                )}
+
+                {calcData?.overweight && (
+                    <div className="bg-red-950 p-3 rounded border-l-4 border-red-500 mb-2">
+                        <div className="flex items-center gap-2 text-red-400 mb-1 font-bold text-xs"><AlertTriangle className="w-4 h-4" /> Overweight</div>
+                        <div className="text-xs text-red-200">CRITICAL: Hover throttle &gt; 75%</div>
+                    </div>
+                )}
+
+                {calcData?.tarotStatus && (
+                    <div className={`p-3 rounded border-l-4 mb-2 ${calcData.tarotStatus.bg}`}>
+                        <div className={`text-xs font-bold mb-1 ${calcData.tarotStatus.color}`}>Tarot Config Check</div>
+                        <div className="text-xs text-white">{calcData.tarotStatus.text}</div>
+                    </div>
+                )}
+
+                {/* BOM Generator */}
+                <div className="mt-8 border-t border-slate-700 pt-6 mb-12">
+                    <h4 className="text-white font-bold mb-2 flex items-center">
+                        <Calculator className="w-5 h-5 mr-2 text-sky-400" />
+                        Bill of Materials (BOM)
+                    </h4>
+                    <p className="text-slate-400 text-xs mb-4">
+                        Generate a BOM based on your current configuration and add the available components directly to your cart in the SKHY Marketplace.
+                    </p>
+
+                    {!isConfigValid && (
+                        <div className="bg-amber-900/30 border border-amber-500/50 rounded-lg p-3 mb-4">
+                            <p className="text-amber-400 text-xs flex items-center">
+                                <AlertTriangle className="w-4 h-4 mr-2 flex-shrink-0" />
+                                Please resolve all safety alerts and warnings (ESC, Voltage, Overweight) before generating a BOM.
+                            </p>
+                        </div>
+                    )}
+
+                    <button
+                        onClick={handleGenerateBOM}
+                        disabled={!isConfigValid || isGeneratingBOM}
+                        className={`w-full py-3 px-4 rounded-lg font-bold flex items-center justify-center transition-all ${!isConfigValid
+                            ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                            : 'bg-sky-600 hover:bg-sky-500 text-white shadow-lg shadow-sky-900/50'
+                            }`}
+                    >
+                        {isGeneratingBOM ? (
+                            <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Generating BOM...</>
+                        ) : (
+                            <><ShoppingCart className="w-5 h-5 mr-2" /> Add Valid Config to Cart</>
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            {/* Main Content Area: 3D Scene + Interlinking wrapper */}
+            <div className="flex-1 flex flex-col relative">
+                <div ref={mountRef} className="flex-1 w-full bg-slate-900" />
+            </div>
+        </div>
+    );
+}

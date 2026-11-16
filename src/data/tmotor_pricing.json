@@ -1,0 +1,30 @@
+[
+  {
+    "id": 881356638,
+    "name": "T-Motor MN4010 (370KV)",
+    "base_price": 65,
+    "currency": "USD",
+    "sku": null
+  },
+  {
+    "id": 870482430,
+    "name": "T-Motor P80 III (100KV)",
+    "base_price": 200,
+    "currency": "USD",
+    "sku": "TMTR-P80-III-100KV"
+  },
+  {
+    "id": 881356663,
+    "name": "T-Motor MN4006 (380KV)",
+    "base_price": 70,
+    "currency": "USD",
+    "sku": "MTR-TM-MN4006-380"
+  },
+  {
+    "id": 900001,
+    "name": "T-Motor P80 III (100KV)",
+    "base_price": 0,
+    "currency": "USD",
+    "sku": null
+  }
+]

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy AI - Mission Architect Whitepaper</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #0ea5e9;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #d1d5db;
+            background-color: #0c111d;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #f8fafc;
+        }
+        .tech-grid {
+            background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.2;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.2);
+            border-color: #0ea5e9;
+        }
+
+        
+        /* ── Print Styles (Legacy removed, moved to whitepaper-print.css) ── */
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+    <link rel="stylesheet" href="/css/skhy-sim-common.css">
+    <script src="/js/skhy-sim-common.js"></script>
+</head>
+<body class="antialiased">
+
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 text-sky-500">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-bold tracking-tight text-white leading-none">SKHY AI</span>
+                        <span class="text-[10px] text-sky-400 font-bold tracking-widest uppercase">Mission Architect</span>
+                    </div>
+                </div>
+                <div class="hidden lg:flex space-x-8 text-sm font-medium text-slate-400">
+                    <a href="#build" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Build Phase</a>
+                    <a href="#transmission" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Transmission</a>
+                    <a href="#positioning" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Positioning & Anti-Jam</a>
+                    <a href="#architecture" class="hover:text-white hover:border-b-2 border-sky-500 transition-all py-1">Architecture</a>
+                </div>
+                <div class="flex items-center">
+                    <button onclick="window.print()" class="print-hidden flex items-center bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded text-sm font-bold uppercase tracking-wide transition-colors">
+                        <i data-lucide="printer" class="w-4 h-4 mr-2"></i> Print
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-24 bg-slate-900 overflow-hidden">
+        <div class="absolute inset-0 tech-grid"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center space-x-2 bg-slate-800 text-sky-400 px-3 py-1 rounded border border-slate-700 text-xs font-bold tracking-wide uppercase mb-6">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span>Strategic Simulation Whitepaper</span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-white mb-6 leading-none">
+                Mission Architect:<br>
+                <span class="gradient-text">Plan Before You Deploy.</span>
+            </h1>
+            <p class="text-xl text-slate-400 leading-relaxed mb-8 max-w-3xl mx-auto">
+                Discover the most advanced simulation suite for resilient drone operations. Engineer your asset's capabilities, map its communication links, and evaluate anti-jamming survivability in contested environments.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-32">
+
+        <!-- Phase 1: Build -->
+        <section id="build" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold text-white mb-4">1. The Build Phase</h2>
+                    <h3 class="text-xl text-sky-400 font-bold mb-6">Structural & Aerodynamic Foundations</h3>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                        Before a mission begins, the physical capabilities of the asset must be strictly defined. The Mission Architect allows operators to configure payload mass, cruise airspeed, and thrust dynamics to calculate real-world performance metrics across three platform types: Vertical Lift (multirotor), Fixed-Wing, and Ground Rover (UGV).
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-sky-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Payload & Range Logic</h4>
+                                <p class="text-slate-500 text-sm">Real-time Breguet Range Formula calculations map endurance against payload constraints for all platform types.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-sky-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Aerodynamic Metrics</h4>
+                                <p class="text-slate-500 text-sm">Visualizing glide ratios (L/D), cruise thrust, and hovering thrust loads for fixed-wing and multi-rotor assets with a live 3D model.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="text-sky-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Multi-Platform Support</h4>
+                                <p class="text-slate-500 text-sm">Switch seamlessly between Vertical Lift, Fixed-Wing, and Rover (UGV) to compare configurations before committing to hardware.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <img src="./images/mission_architect_build.png" alt="Multirotor Build Phase Simulator" class="relative rounded-xl border border-slate-700 shadow-2xl w-full">
+                </div>
+            </div>
+
+            <!-- Fixed-Wing Variant -->
+            <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="relative group lg:order-1 order-2">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-violet-500 to-sky-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <img src="./images/mission_architect_fixedwing.png" alt="Fixed-Wing Build Phase Simulator" class="relative rounded-xl border border-slate-700 shadow-2xl w-full">
+                </div>
+                <div class="lg:order-2 order-1">
+                    <div class="inline-flex items-center space-x-2 bg-violet-500/10 text-violet-400 px-3 py-1 rounded border border-violet-500/30 text-xs font-bold tracking-wide uppercase mb-4">
+                        <i data-lucide="plane" class="w-3 h-3 mr-1"></i>
+                        Fixed-Wing Mode
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Fixed-Wing VTOL Simulation</h3>
+                    <p class="text-slate-400 text-base leading-relaxed mb-4">
+                        For long-range ISR missions, the Fixed-Wing simulator models cruise-optimized performance with the AERO-SIM V5.0 engine. Structural analysis, Tail/CRV22 configurations, and real-time telemetry (altitude, heading, vertical speed) are all simulated prior to any physical deployment.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Projected Range</div>
+                            <div class="text-2xl font-bold text-sky-400 font-mono">162 km</div>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Glide Ratio (L/D)</div>
+                            <div class="text-2xl font-bold text-violet-400 font-mono">18:1</div>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Flight Endurance</div>
+                            <div class="text-2xl font-bold text-emerald-400 font-mono">139 min</div>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Hover % Thrust</div>
+                            <div class="text-2xl font-bold text-amber-400 font-mono">52.3%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 2: Transmission -->
+        <section id="transmission" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center flex-col-reverse lg:flex-row-reverse">
+                <div class="relative group lg:order-1 order-2">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-sky-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <img src="./images/mission_architect_transmission.png" alt="Transmission Phase Simulator" class="relative rounded-xl border border-slate-700 shadow-2xl w-full">
+                </div>
+                <div class="lg:order-2 order-1">
+                    <h2 class="text-4xl font-bold text-white mb-4">2. Transmission Resiliency</h2>
+                    <h3 class="text-xl text-emerald-400 font-bold mb-6">Robust Multi-Band Communications</h3>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                        Securing the data link is paramount. The Transmission domain models Signal-to-Interference Ratios (SIR) and validates the network architecture between the Ground Control Station (GCS), the drone, and aerial relays.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <i data-lucide="radio" class="text-emerald-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Live Spectrum Analysis</h4>
+                                <p class="text-slate-500 text-sm">Evaluate uplink and downlink signal power against adversarial jammer interference dynamically across the operational range.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="network" class="text-emerald-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Signal Relay Architecture</h4>
+                                <p class="text-slate-500 text-sm">Simulate the deployment of high-altitude fixed-wing relays to bypass line-of-sight constraints and EW kill zones.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 3: Positioning -->
+        <section id="positioning" class="scroll-mt-24">
+            <div class="mb-12 text-center">
+                <h2 class="text-4xl font-bold text-white mb-4">3. Tactical Positioning & Anti-Jamming</h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">
+                    Navigating contested environments requires predictive routing and hardened reception. The Mission Architect simulates GNSS denial and validates Controlled Reception Pattern Antenna (CRPA) performance.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Tactical Map -->
+                <div class="feature-card bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg">
+                    <img src="./images/mission_architect_map.png" alt="Tactical Mission Positioning" class="w-full object-cover border-b border-slate-700">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3">Terrain & Threat Avoidance</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                            Deploy assets onto a real-world map to visualize Electronic Warfare (EW) Kill Zones. The system automatically generates optimized, EW-resilient flight corridors that avoid known jammer threats while maintaining required standoff distances.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CRPA -->
+                <div class="feature-card bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg">
+                    <img src="./images/mission_architect_crpa.png" alt="CRPA Simulation" class="w-full object-cover border-b border-slate-700">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3">Multi-Constellation CRPA Validation</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                            Configure anti-jamming hardware arrays (e.g., SKHY AJGPS 601) to simulate null-steering against multiple interference sources. Operators can visualize null generation and aggregate GNSS Signal-to-Noise Ratio (SNR) in real-time under attack conditions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 4: Architecture -->
+        <section id="architecture" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold text-white mb-4">4. System Architecture</h2>
+                    <h3 class="text-xl text-amber-400 font-bold mb-6">Mission Wiring & Hardware Topology</h3>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                        The Architecture phase visualizes every hardware component and its interconnections as an interactive node-based wiring diagram. Operators confirm that power rails, data buses, RF/antenna links, and control/PWM pathways are correctly configured before manufacturing.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <i data-lucide="cpu" class="text-amber-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Component-Level Connectivity</h4>
+                                <p class="text-slate-500 text-sm">Each node represents a physical component (Battery, Flight Controller, AJGPS, ESC, Payload) with real-world pin-level wiring connections displayed visually.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="zap" class="text-amber-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Live Power Budget</h4>
+                                <p class="text-slate-500 text-sm">Real-time aggregate current draw, bus power load, core load, and mission load are tracked in the top HUD to prevent overspecification or thermal overruns.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="git-branch" class="text-amber-500 w-6 h-6 mr-3 flex-shrink-0"></i>
+                            <div>
+                                <h4 class="text-white font-bold">Multi-Bus Signal Routing</h4>
+                                <p class="text-slate-500 text-sm">Separate colour-coded buses for Power Rail, Data/UART, Control/PWM, RF/Antenna, Video Downlink, and Ground ensure electrical integrity is verified before build.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <img src="./images/mission_architect_architecture.png" alt="Mission Architecture Wiring Diagram" class="relative rounded-xl border border-slate-700 shadow-2xl w-full">
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="text-center bg-slate-800/50 border border-slate-700 rounded-2xl p-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Ready to Plan Your Next Mission?</h2>
+            <p class="text-slate-400 mb-8 max-w-2xl mx-auto">
+                The SKHY AI Mission Architect eliminates guesswork from tactical deployments. By modeling physics, communication, and electronic warfare upfront, operators ensure mission success before assets leave the ground.
+            </p>
+            <a href="/plan-scenario" class="inline-block bg-sky-500 hover:bg-sky-400 text-slate-900 font-bold px-8 py-4 rounded-lg transition-colors shadow-[0_0_20px_rgba(14,165,233,0.4)]">
+                Launch Mission Architect
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center items-center space-x-3 mb-6">
+                <div class="w-8 h-8 text-sky-500">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold text-white tracking-tight">SKHY AI</span>
+            </div>
+            <p class="text-xs text-slate-600">
+                &copy; 2026 Skand Dev Technologies (OPC) Pvt Ltd.<br>
+                SKhy is a trademark of Skand Dev Technologies (OPC) Pvt Ltd.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

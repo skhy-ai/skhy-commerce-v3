@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy AI - Autonomous Systems Simplified | Intelligent Spectrum Dominance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Teko:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* CSS variables for theming */
+        :root {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-tertiary: #374151;
+            --bg-diagram: #1f2937;
+            --bg-architecture: #111827;
+            --text-primary: #d1d5db;
+            --text-secondary: #9ca3af;
+            --text-strong: #f3f4f6;
+            --text-heading: #dbeafe;
+            --border-primary: #374151;
+            --border-secondary: #4b5563;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #2563eb;
+            --accent-tertiary: #1d4ed8;
+            --svg-icon-stroke: #d1d5db;
+            --svg-text-fill: #d1d5db;
+            --info-overlay-bg: rgba(17, 24, 39, 0.85);
+        }
+
+        .light-mode {
+            --bg-primary: #f9fafb;
+            --bg-secondary: #f3f4f6;
+            --bg-tertiary: #e5e7eb;
+            --bg-diagram: #ffffff;
+            --bg-architecture: #f9fafb;
+            --text-primary: #374151;
+            --text-secondary: #6b7280;
+            --text-strong: #111827;
+            --text-heading: #1e3a8a;
+            --border-primary: #d1d5db;
+            --border-secondary: #9ca3af;
+            --svg-icon-stroke: #374151;
+            --svg-text-fill: #1f2937;
+            --info-overlay-bg: rgba(249, 250, 251, 0.9);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Teko', sans-serif;
+            letter-spacing: 0.025em;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+        .prose { max-width: 80ch; color: var(--text-primary); }
+        .prose p, .prose li { line-height: 1.75; }
+        .prose strong { color: var(--text-strong); }
+        .main-container {
+            max-width: 1024px;
+            margin: auto;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            border-bottom: 3px solid var(--accent-primary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .abstract {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+        .visualization-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background-color: #000000;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            cursor: grab;
+            border: 1px solid var(--border-secondary);
+        }
+        .visualization-container:active { cursor: grabbing; }
+        .scenario-controls {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 10;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .scenario-btn {
+            background-color: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .scenario-btn:hover { background-color: var(--accent-secondary); }
+        .info-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background-color: var(--info-overlay-bg);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-primary);
+            z-index: 10;
+            max-width: 450px;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+        .info-overlay h3 { color: var(--text-strong); }
+        .scene-label {
+            position: absolute;
+            background-color: var(--info-overlay-bg);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            transform: translate(-50%, -150%);
+            white-space: nowrap;
+            border: 1px solid var(--border-primary);
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-secondary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .cta-button:hover { background-color: var(--accent-tertiary); }
+        #watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.05;
+            color: var(--text-strong);
+            text-align: center;
+        }
+        #watermark svg { width: 40vw; height: 40vw; max-width: 500px; max-height: 500px; margin: 0 auto; }
+        #watermark h1 { font-size: 10vw; font-family: 'Teko', sans-serif; }
+        
+        /* Timeline Styles */
+        .timeline-wrapper { width: 100%; margin-top: 2rem; }
+        .timeline-bar { display: flex; flex-direction: row; border-radius: 0.5rem 0.5rem 0 0; overflow: hidden; }
+        .timeline-segment { padding: 0.75rem; color: white; font-weight: 600; text-align: center; font-family: 'Teko', sans-serif; font-size: 1.25rem; }
+        .timeline-details { display: flex; background-color: var(--bg-secondary); border-radius: 0 0 0.5rem 0.5rem; }
+        .timeline-detail { flex-grow: 1; padding: 1.5rem; border-right: 1px solid var(--border-primary); }
+        .timeline-details .timeline-detail:last-child { border-right: none; }
+        
+        /* Applicability Diagram Tabs */
+        .domain-tab-btn { background-color: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-primary); border-bottom: none; transition: background-color 0.2s, color 0.2s; }
+        .domain-tab-btn.active { background-color: var(--bg-tertiary); color: var(--text-strong); border-color: var(--border-secondary); }
+        .domain-diagram { background-color: var(--bg-diagram); border: 1px solid var(--border-secondary); border-radius: 0 0.5rem 0.5rem 0.5rem; transition: background-color 0.3s, border-color 0.3s; }
+        .domain-diagram text { fill: var(--svg-text-fill); transition: fill 0.3s; }
+        .domain-diagram .icon-stroke { stroke: var(--svg-icon-stroke); transition: stroke 0.3s; }
+
+        /* SVG Animations */
+        @keyframes pulse { 0% { opacity: 0.6; transform: scale(0.5); } 100% { opacity: 0; transform: scale(1.5); } }
+        .jamming-wave { transform-origin: center; animation: pulse 2s infinite ease-out; opacity: 0; }
+        @keyframes dash { from { stroke-dashoffset: 200; } to { stroke-dashoffset: 0; } }
+        .secure-link { stroke-dasharray: 10 5; animation: dash 5s linear infinite; }
+
+        /* Video Player */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 0.75rem; margin: 2rem 0; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); cursor: pointer; transition: background 0.3s ease; }
+        .video-overlay.hidden { display: none; }
+        .video-overlay:hover { background: rgba(0,0,0,0.2); }
+        .play-button { width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; backdrop-filter: blur(5px); }
+        .play-button svg { fill: white; width: 40px; height: 40px; }
+
+        /* Theme Toggle Switch */
+        #theme-toggle-container { position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100; }
+        .theme-toggle { cursor: pointer; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background-color: var(--bg-tertiary); color: var(--text-primary); transition: background-color 0.3s; border: none; }
+        .theme-toggle svg { width: 24px; height: 24px; }
+        .theme-toggle .sun-icon { display: none; }
+        .theme-toggle .moon-icon { display: block; }
+        .light-mode .theme-toggle .sun-icon { display: block; }
+        .light-mode .theme-toggle .moon-icon { display: none; }
+
+        /* Architecture Diagram Theming */
+        .architecture-bg { background-color: var(--bg-architecture); }
+        .architecture-diagram text { fill: var(--text-primary); }
+        .architecture-diagram .text-box-dark { fill: #1f2937; }
+        .architecture-diagram .text-box-light { fill: white; }
+        .architecture-diagram .arrow-path { stroke: var(--text-secondary); }
+        .architecture-diagram .arrow-head { fill: var(--text-secondary); }
+
+        @media (max-width: 768px) {
+            .section-title { font-size: 2rem; }
+            .timeline-bar, .timeline-details { flex-direction: column; }
+            .timeline-details .timeline-detail { border-right: none; border-bottom: 1px solid var(--border-primary); }
+            .timeline-details .timeline-detail:last-child { border-bottom: none; }
+            .domain-diagram text { font-size: 14px; }
+            #theme-toggle-container { top: 1rem; right: 1rem; }
+            .header-text { text-align: center; }
+            .header-text h1 { font-size: 2.5rem; }
+            .header-text p { font-size: 1rem; }
+        }
+
+        
+        /* ── Print Styles (Legacy removed, moved to whitepaper-print.css) ── */
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+</head>
+    <!-- Shared Simulator Assets -->
+    <link rel="stylesheet" href="/css/skhy-sim-common.css">
+    <script src="/js/skhy-sim-common.js"></script>
+</head>
+<body class="antialiased">
+
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlays injected via skhy-sim-common.js -->
+    
+    <div id="theme-toggle-container">
+        <button id="theme-toggle" class="theme-toggle" title="Toggle light/dark mode">
+            <svg class="sun-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 7.072l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 001.414 1.414zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            <svg class="moon-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+        </button>
+    </div>
+
+    <div class="main-container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        
+        <header class="text-center mb-16">
+            <div class="flex justify-center items-center text-[var(--text-strong)] mb-4">
+                 <h1 class="text-5xl font-bold mr-4">SKHY</h1>
+                 <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon></svg>
+            </div>
+            <div class="header-text">
+                <h1 class="text-4xl sm:text-5xl font-bold text-[var(--text-strong)] tracking-tight">Intelligent Spectrum Dominance</h1>
+                <p class="mt-4 text-lg sm:text-xl text-[var(--text-secondary)] max-w-3xl mx-auto">A Whitepaper on the SKHY Resilicom AI Box</p>
+            </div>
+        </header>
+
+        <main class="prose mx-auto">
+
+            <section id="summary" class="mb-16">
+                <div class="abstract">
+                    <h2 class="text-3xl mb-2" style="color: #f3f4f6;">Executive Summary</h2>
+                    <p>The modern electromagnetic environment is increasingly congested and contested. State and non-state actors deploy sophisticated electronic warfare (EW) tactics like RF jamming and GNSS spoofing, threatening the integrity of critical communication and navigation systems. Conventional antenna technologies with static radiation patterns are fundamentally ill-equipped to counter these dynamic, multi-vector threats. This whitepaper introduces a paradigm shift: the SKHY Resilicom AI Box. By integrating advanced reconfigurable hardware with a reinforcement learning core, our technology provides autonomous, real-time electronic protection, ensuring persistent connectivity and positional accuracy for assets across all operational domains.</p>
+                </div>
+            </section>
+            
+            <section id="challenge" class="mb-16">
+                <h2 class="section-title">The Challenge: A Contested Spectrum</h2>
+                <p>From tactical operations on the ground to strategic satellite communications, reliance on the electromagnetic spectrum is absolute. However, this reliance is also a critical vulnerability. The proliferation of low-cost, high-power jammers and sophisticated spoofing systems can create "denied" zones, severing command and control (C2), blinding ISR assets, and compromising PNT (Positioning, Navigation, and Timing) data. Legacy systems, which often require manual intervention or rely on slow-to-adapt filtering, cannot keep pace with threats that change frequency, location, and waveform in seconds. A new class of intelligent, autonomous, and adaptive technology is required to achieve spectrum dominance.</p>
+            </section>
+
+            <section class="mb-16 not-prose">
+                <h2 class="section-title prose mx-auto">Technology in Action: 3D Visualization</h2>
+                <p class="prose mx-auto mb-8">The SKHY Resilicom AI Box operates as an intelligent shield in the electromagnetic spectrum. The interactive tour below demonstrates how it dynamically adapts its reception pattern to counter common threats. Use your mouse to rotate the view and the buttons to navigate between scenarios.</p>
+                <div id="visualization-container" class="visualization-container">
+                    <div id="info-overlay-container" class="info-overlay-container"></div>
+                    <div id="labels-container" class="labels-container"></div>
+                    <div class="scenario-controls">
+                        <button id="prev-scenario-btn" class="scenario-btn">Previous</button>
+                        <button id="next-scenario-btn" class="scenario-btn">Next</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="solution" class="mb-16">
+                <h2 class="section-title">The Solution: The SKHY Resilicom AI Box</h2>
+                <p class="leading-relaxed mb-6">SKHY's solution is a fully integrated system that combines reconfigurable hardware with an intelligent AI core to create a true cognitive radio antenna. It operates autonomously to sense, identify, and neutralize threats before they can impact system performance.</p>
+                <div class="grid md:grid-cols-1 gap-8 items-center">
+                    <div class="text-center architecture-bg p-6 rounded-lg border border-[var(--border-primary)] shadow-lg">
+                        <h4 class="text-2xl mb-4">System Architecture</h4>
+                        <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" class="w-full architecture-diagram">
+                            <defs>
+                                <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#60a5fa" /><stop offset="100%" style="stop-color:#3b82f6" /></linearGradient>
+                                <linearGradient id="grad-yellow" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#facc15" /><stop offset="100%" style="stop-color:#f59e0b" /></linearGradient>
+                                <linearGradient id="grad-teal" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#5eead4" /><stop offset="100%" style="stop-color:#2dd4bf" /></linearGradient>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head" /></marker>
+                                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+                            </defs>
+                            <g filter="url(#shadow)"><rect x="100" y="20" width="300" height="50" rx="8" fill="url(#grad-blue)" /><text x="250" y="50" font-family="Inter, sans-serif" font-size="16" class="text-box-light" text-anchor="middle" font-weight="600">Reconfigurable Antenna</text></g>
+                            <g filter="url(#shadow)"><rect x="100" y="90" width="300" height="50" rx="8" fill="#4b5563" /><text x="250" y="120" font-family="Inter, sans-serif" font-size="16" class="text-box-light" text-anchor="middle" font-weight="600">RF MEMS &amp; Control Logic</text></g>
+                            <g filter="url(#shadow)"><rect x="100" y="160" width="300" height="50" rx="8" fill="url(#grad-yellow)" /><text x="250" y="190" font-family="Inter, sans-serif" font-size="16" class="text-box-dark" text-anchor="middle" font-weight="600">AI/ML Processor</text></g>
+                            <g filter="url(#shadow)"><rect x="100" y="230" width="300" height="50" rx="8" fill="url(#grad-teal)" /><text x="250" y="260" font-family="Inter, sans-serif" font-size="16" class="text-box-dark" text-anchor="middle" font-weight="600">SDR Unit (Signal Feedback)</text></g>
+                            <line x1="250" y1="70" x2="250" y2="90" class="arrow-path" stroke-width="2" marker-end="url(#arrow)" />
+                            <line x1="250" y1="140" x2="250" y2="160" class="arrow-path" stroke-width="2" marker-end="url(#arrow)" />
+                            <line x1="250" y1="210" x2="250" y2="230" class="arrow-path" stroke-width="2" marker-end="url(#arrow)" />
+                            <path d="M 400 255 C 460 255 460 115 400 115" class="arrow-path" stroke-width="2" fill="none" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+                            <text x="445" y="185" font-family="Inter, sans-serif" font-size="14" text-anchor="middle" transform="rotate(90, 445, 185)">RL Policy Update</text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <section id="domains" class="mb-16 not-prose">
+                 <h2 class="section-title">Applicability Across Domains</h2>
+                <p class="prose mx-auto mb-8">The low-SWaP design of the SKHY Resilicom AI Box makes it a mission-critical force multiplier. The diagrams below visualize its application on different platforms.</p>
+                <div class="domain-tabs flex space-x-1 mb-0">
+                    <button data-tab="soldier" class="domain-tab-btn active px-4 py-2 rounded-t-lg font-semibold">The Ground Soldier</button>
+                    <button data-tab="drone" class="domain-tab-btn px-4 py-2 rounded-t-lg font-semibold">The ISR Drone</button>
+                    <button data-tab="swarm" class="domain-tab-btn px-4 py-2 rounded-t-lg font-semibold">The Swarm Coordinator</button>
+                </div>
+                <div id="soldier-diagram" class="domain-diagram p-4">
+                    <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" style="font-family: Inter, sans-serif; font-size: 12px;">
+                        <g id="soldier-icon" transform="translate(250, 200) scale(1.5)"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" class="icon-stroke" stroke-width="2" stroke-linecap="round"/><circle cx="8.5" cy="9" r="4" fill="none" class="icon-stroke" stroke-width="2"/><rect x="4.5" y="15" width="8" height="3" fill="#3b82f6" stroke="#dbeafe" stroke-width="0.5"/></g>
+                        <g id="jammer-icon" transform="translate(50, 220)"><rect x="0" y="0" width="30" height="20" fill="#f43f5e"/><line x1="15" y1="0" x2="15" y2="-20" stroke="#f43f5e" stroke-width="3"/></g>
+                        <g id="base-icon" transform="translate(500, 200)"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" class="icon-stroke" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" fill="none" class="icon-stroke" stroke-width="2"/></g>
+                        <circle cx="65" cy="230" r="80" fill="#f43f5e" fill-opacity="0.3" class="jamming-wave"/>
+                        <path d="M 200 225 A 80 80 0 0 1 260 150" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="8 4"/>
+                        <line x1="265" y1="215" x2="500" y2="215" stroke="#3b82f6" stroke-width="2" class="secure-link"/>
+                        <text x="65" y="255" text-anchor="middle">Hostile Jammer</text>
+                        <text x="258" y="245" text-anchor="middle">Protected Soldier</text>
+                        <text x="510" y="240" text-anchor="middle">Command Base</text>
+                        <text x="400" y="205" fill="#3b82f6">Secure C2 Link</text>
+                        <text x="195" y="175" fill="#22d3ee" text-anchor="end">Jamming Nullification</text>
+                    </svg>
+                </div>
+                <div id="drone-diagram" class="domain-diagram p-4 hidden">
+                    <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" style="font-family: Inter, sans-serif; font-size: 12px;">
+                        <g id="drone-icon" transform="translate(300, 100) scale(1.5)"><path d="M12 19l-7-7 7-7" fill="none" class="icon-stroke" stroke-width="2"/><path d="M22 12H5" fill="none" class="icon-stroke" stroke-width="2"/><path d="M19 19l-7-7 7-7" fill="none" class="icon-stroke" stroke-width="2"/><rect x="4" y="10" width="3" height="4" fill="#3b82f6" stroke="#dbeafe" stroke-width="0.5"/></g>
+                        <g id="sat-icon" transform="translate(500, 50) scale(1.2)"><rect x="5" y="8" width="14" height="8" class="icon-stroke" fill="var(--bg-tertiary)" /><line x1="12" y1="8" x2="12" y2="3" class="icon-stroke" stroke-width="1.5"/><line x1="0" y1="12" x2="5" y2="12" stroke="#3b82f6" stroke-width="2"/><line x1="19" y1="12" x2="24" y2="12" stroke="#3b82f6" stroke-width="2"/></g>
+                        <g id="ground-jammer-icon" transform="translate(400, 250)"><rect x="0" y="0" width="30" height="20" fill="#f43f5e"/><line x1="15" y1="0" x2="15" y2="-20" stroke="#f43f5e" stroke-width="3"/></g>
+                        <g id="tank-icon" transform="translate(100, 260) scale(1.2)"><path d="M20 10H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z" fill="#a8a29e"/><path d="M4 14h16" fill="none" stroke="#4b5563" stroke-width="1"/><circle cx="7" cy="18" r="2" fill="#4b5563"/><circle cx="17" cy="18" r="2" fill="#4b5563"/><path d="M12 10V8a2 2 0 0 1 2-2h4" fill="none" stroke="#a8a29e" stroke-width="2"/></g>
+                        <circle cx="415" cy="260" r="60" fill="#f43f5e" fill-opacity="0.3" class="jamming-wave"/>
+                        <path d="M 350 120 A 80 80 0 0 0 400 200" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="8 4"/>
+                        <line x1="315" y1="110" x2="505" y2="60" stroke="#3b82f6" stroke-width="2" class="secure-link"/>
+                        <path d="M300 125 C 250 180, 150 220, 115 260" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4"/>
+                        <text x="300" y="90" text-anchor="middle">ISR Drone w/ Resilicom</text>
+                        <text x="115" y="250" text-anchor="middle">Target ID</text>
+                        <text x="415" y="285" text-anchor="middle">GNSS Jammer</text>
+                        <text x="510" y="45" text-anchor="middle">SATCOM</text>
+                        <text x="430" y="80" fill="#3b82f6">Secure SATCOM Link</text>
+                        <text x="195" y="195" fill="#10b981">Target Data Downlink</text>
+                        <text x="410" y="170" fill="#22d3ee" text-anchor="middle">Jamming Nullification</text>
+                    </svg>
+                </div>
+                <div id="swarm-diagram" class="domain-diagram p-4 hidden">
+                    <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" style="font-family: Inter, sans-serif; font-size: 12px;">
+                        <defs><g id="swarm-drone-icon"><circle cx="0" cy="0" r="8" fill="#64748b"/><line x1="-10" y1="0" x2="10" y2="0" stroke="#94a3b8" stroke-width="1.5"/><line x1="0" y1="-10" x2="0" y2="10" stroke="#94a3b8" stroke-width="1.5"/></g></defs>
+                        <g id="coordinator-icon" transform="translate(100, 150) scale(2)"><path d="M12 19l-7-7 7-7" fill="none" class="icon-stroke" stroke-width="2"/><path d="M22 12H5" fill="none" class="icon-stroke" stroke-width="2"/><path d="M19 19l-7-7 7-7" fill="none" class="icon-stroke" stroke-width="2"/><rect x="4" y="10" width="3" height="4" fill="#3b82f6" stroke="#dbeafe" stroke-width="0.5"/></g>
+                        <use href="#swarm-drone-icon" x="300" y="80"/><use href="#swarm-drone-icon" x="350" y="150"/><use href="#swarm-drone-icon" x="320" y="220"/><use href="#swarm-drone-icon" x="420" y="100"/><use href="#swarm-drone-icon" x="450" y="200"/>
+                        <g id="swarm-jammer1" transform="translate(500, 50)"><rect x="0" y="0" width="30" height="20" fill="#f43f5e"/><line x1="15" y1="0" x2="15" y2="-20" stroke="#f43f5e" stroke-width="3"/></g>
+                        <g id="swarm-jammer2" transform="translate(500, 230)"><rect x="0" y="0" width="30" height="20" fill="#f43f5e"/><line x1="15" y1="0" x2="15" y2="-20" stroke="#f43f5e" stroke-width="3"/></g>
+                        <circle cx="515" cy="60" r="70" fill="#f43f5e" fill-opacity="0.3" class="jamming-wave" style="animation-delay: -1s;"/>
+                        <circle cx="515" cy="240" r="70" fill="#f43f5e" fill-opacity="0.3" class="jamming-wave"/>
+                        <line x1="120" y1="150" x2="300" y2="80" stroke="#3b82f6" stroke-width="1.5" class="secure-link"/><line x1="120" y1="150" x2="350" y2="150" stroke="#ec4899" stroke-width="1.5" class="secure-link" style="animation-duration: 1.5s;"/><line x1="120" y1="150" x2="320" y2="220" stroke="#a78bfa" stroke-width="1.5" class="secure-link" style="animation-duration: 2.5s;"/><line x1="120" y1="150" x2="420" y2="100" stroke="#3b82f6" stroke-width="1.5" class="secure-link" style="animation-duration: 2s;"/><line x1="120" y1="150" x2="450" y2="200" stroke="#ec4899" stroke-width="1.5" class="secure-link" style="animation-duration: 1s;"/>
+                        <text x="100" y="120" text-anchor="middle">Coordinator w/ Resilicom</text>
+                        <text x="370" y="50" text-anchor="middle"> Mesh Network</text>
+                        <text x="515" y="35" text-anchor="middle">Hostile Jammer</text>
+                        <text x="515" y="275" text-anchor="middle">Hostile Jammer</text>
+                        <text x="375" y="130">Swarm Drones</text>
+                    </svg>
+                </div>
+            </section>
+            
+            <section id="intro_video" class="mb-16 not-prose">
+                <h2 class="section-title">Concept of Operations</h2>
+                 <div class="video-container">
+                    <div id="player"></div>
+                    <div id="video-overlay" class="video-overlay">
+                        <div class="play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="timeline" class="mb-16 not-prose">
+                <h2 class="section-title">Project Timeline</h2>
+                <div class="timeline-wrapper">
+                    <div class="timeline-bar">
+                        <div class="timeline-segment" style="background: #1e3a8a; flex-basis: 25%;">H2 2024</div>
+                        <div class="timeline-segment" style="background: #2563eb; flex-basis: 50%;">2025</div>
+                        <div class="timeline-segment" style="background: #3b82f6; flex-basis: 25%;">Q1 2026</div>
+                    </div>
+                    <div class="timeline-details">
+                        <div class="timeline-detail" style="flex-basis: 25%;"><h4 class="font-bold text-lg text-blue-300">Phase 1: Design & Simulation</h4><p class="text-sm text-[var(--text-secondary)] mt-2">Finalize multi-band antenna design and validate performance using 3D EM modeling. Define AI control logic.</p></div>
+                        <div class="timeline-detail" style="flex-basis: 50%;"><h4 class="font-bold text-lg text-blue-400">Phase 2: Fabrication & Integration</h4><p class="text-sm text-[var(--text-secondary)] mt-2">Fabricate prototype with RF MEMS and metamaterial structures. Integrate the AI controller and SDR for lab-based validation against simulated threats.</p></div>
+                        <div class="timeline-detail" style="flex-basis: 25%;"><h4 class="font-bold text-lg text-sky-400">Phase 3: Field Testing & Release</h4><p class="text-sm text-[var(--text-secondary)] mt-2">Conduct rigorous field testing to achieve TRL-6. Final optimization and IP filing, leading to product release in March 2026.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="conclusion" class="text-center">
+                <h2 class="section-title">Conclusion: Enabling Future Operations</h2>
+                <p class="mt-4">The SKHY Resilicom AI Box is more than an incremental improvement; it is a foundational technology for future secure communications. By providing platforms with the autonomous ability to master their electromagnetic environment, we ensure operational superiority and resilience. This technology empowers commanders, protects assets, and guarantees mission success in the face of the most advanced electronic threats.</p>
+                <div class="mt-8 flex flex-col items-center space-y-4">
+                    <p class="text-[var(--text-secondary)] text-sm font-bold uppercase tracking-wide">For technical inquiries:</p>
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <a href="mailto:contact@skhy.systems" class="text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] transition font-bold flex items-center gap-2">
+                            <i data-lucide="mail" class="w-4 h-4"></i> contact@skhy.systems
+                        </a>
+                        <a href="tel:+919335193489" class="text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] transition font-bold flex items-center gap-2">
+                            <i data-lucide="phone" class="w-4 h-4"></i> Global: +91-9335193489
+                        </a>
+                        <a href="tel:+601116370315" class="text-amber-400 hover:text-amber-300 transition font-bold flex items-center gap-2">
+                            <i data-lucide="phone" class="w-4 h-4"></i> Malaysia: +601116370315
+                        </a>
+                    </div>
+                    <div class="pt-4 border-t border-gray-800 w-full max-w-2xl text-[10px] text-gray-500 space-y-1">
+                        <p>Global Registration: Skand Dev Technologies (OPC) Pvt Ltd | DIPP234549</p>
+                        <p>South East Asia: SKhy AI Malaysia Registration Pending</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- SKHY AI Branded Print Footer (only visible when printing) -->
+    <div class="skhy-print-footer">
+        <div class="skhy-print-footer-contact">
+            <strong>Skand Dev Technologies (OPC) Pvt Ltd</strong><br>
+            contact@skhy.systems | +91-9335193489 | +601116370315 (MY)
+        </div>
+        <div class="skhy-print-footer-reg">
+            SKHY AI SOLUTIONS — Reg: 202503090021
+        </div>
+    </div>
+
+    <script type="importmap">
+        {"imports": {"three": "https://res.cloudinary.com/dp19oy6st/raw/upload/v1774612296/skhy-assets/cdn.jsdelivr.net_npm_three_0.164.1_build_three.module_xdil7o.js","three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"}}
+    </script>
+    <script type="module" src="/js/resilicom_ai.js"></script>
+</body>
+</html>

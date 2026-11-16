@@ -1,0 +1,12 @@
+# Serverless function redirects
+/api/visitor-counts    /.netlify/functions/visitor-counts    200
+/api/record-visit      /.netlify/functions/record-visit      200
+/api/send-email        /.netlify/functions/send-email        200
+/api/ai-chat           /.netlify/functions/ai-chat           200
+/api/geoip             https://ipapi.co/json/                200!
+
+# Missing hashed assets must return 404 so browsers do not treat index.html as CSS/JS
+/assets/*              /404.html                             404
+
+# SPA fallback for all HTML routes
+/*                     /index.html                           200

@@ -1,0 +1,191 @@
+/* whitepaper-print.css - Centralized Print Styles for SKHY AI Whitepapers */
+
+/* ── DEFAULT PRINT CONFIG ── */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 15mm 12mm 15mm 12mm;
+    }
+
+    /* Global layout constraints for print */
+    * {
+        box-sizing: border-box !important;
+        -webkit-print-color-adjust: exact !important;
+    }
+
+    html, body {
+        color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
+        /* Keep original background and color from HTML */
+    }
+
+    /* SVG variables for print - adjusting to be visible on dark/original backgrounds */
+    body {
+        --svg-text-fill: currentColor !important;
+        --svg-icon-stroke: currentColor !important;
+        --svg-text: currentColor !important;
+        --svg-stroke: rgba(255, 255, 255, 0.2) !important;
+        --svg-bg: rgba(0, 0, 0, 0.2) !important;
+    }
+
+    /* Constrain all containers and media */
+    img, svg, video, canvas, figure, table, .grid, .flex, .container, main, article, section {
+        max-width: 100% !important;
+        height: auto !important;
+        overflow-wrap: break-word !important;
+    }
+
+    /* Tables: keep them readable */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        table-layout: fixed !important;
+    }
+
+    th, td {
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        padding: 8px !important;
+        word-break: break-word !important;
+    }
+
+    th {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    /* Strip blurs but keep shadows if needed */
+    * {
+        backdrop-filter: none !important;
+    }
+
+    /* Preserve Images and handle overflow */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        display: block;
+        margin: 10px auto;
+    }
+
+    /* Prevent sections splitting mid-page */
+    section, article, .feature-card, .platform-card, .highlight-box, .grid > div, tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 20px !important;
+        max-width: 100% !important;
+    }
+
+    h1, h2, h3, h4 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    /* Hide Interactive and Redundant Elements */
+    nav, footer, .print-hidden, button, .scenario-controls, #watermark, 
+    .fixed, .sticky, .skhy-header, #theme-toggle-container, 
+    .absolute.top-4.right-4, .theme-toggle-wrapper {
+        display: none !important;
+    }
+
+    /* ── SKHY BRANDED PRINT HEADER ── */
+    .skhy-print-header {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        page-break-inside: avoid;
+        background: transparent !important;
+        width: 100%;
+    }
+
+    .skhy-print-header-logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .skhy-print-header-logo-img {
+        height: 70px;
+        width: auto;
+        margin: 0 !important;
+        filter: brightness(1.1);
+    }
+
+    .skhy-print-header-text h2 {
+        font-family: 'Inter', sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1;
+        margin: 0;
+        color: #ffffff !important;
+    }
+
+    .skhy-print-header-text p {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin: 4px 0 0 0;
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    /* ── SKHY BRANDED PRINT FOOTER ── */
+    .skhy-print-footer {
+        display: flex !important;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding-top: 15px;
+        margin-top: 40px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        page-break-inside: avoid;
+        background: transparent !important;
+        width: 100%;
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .skhy-print-footer-contact {
+        text-align: left;
+        line-height: 1.5;
+    }
+
+    .skhy-print-footer-contact strong {
+        font-size: 10px;
+        color: #ffffff !important;
+        text-transform: uppercase;
+    }
+
+    .skhy-print-footer-reg {
+        text-align: right;
+        opacity: 0.8;
+    }
+
+    /* Show print-only elements */
+    .print-show {
+        display: block !important;
+    }
+
+    /* ── PRINT FRIENDLY MODE OVERRIDES ── */
+    .print-friendly-mode * {
+        background-image: none !important;
+        background-color: transparent !important;
+        color: #111827 !important;
+        border-color: #e5e7eb !important;
+    }
+}
+
+/* ── SCREEN UTILITIES (hidden on screen) ── */
+.skhy-print-header,
+.skhy-print-footer {
+    display: none;
+}

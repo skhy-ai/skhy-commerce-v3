@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>404 - Not Found</title>
+  <script>
+    // If a human visitor navigates directly to a dead link, redirect home.
+    // If it's an asset (.js, .css), do not redirect so browsers don't try to parse HTML.
+    if (!location.pathname.startsWith('/assets/')) {
+      location.replace('/');
+    }
+  </script>
+</head>
+<body style="background: #000; color: #fff; font-family: sans-serif; text-align: center; padding-top: 100px;">
+  <h1>404 - Resource Not Found</h1>
+  <p><a href="/" style="color: #00f0ff;">Return to Skhy AI</a></p>
+</body>
+</html>

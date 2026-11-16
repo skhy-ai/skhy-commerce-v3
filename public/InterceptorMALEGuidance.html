@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interceptor & MALE Drone Guidance Network</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #0f172a; /* Tailwind navy-900 */
+            color: #cbd5e1; /* Tailwind slate-300 */
+            line-height: 1.6;
+        }
+        h1, h2, h3, h4 {
+            color: #f8fafc; /* Tailwind slate-50 */
+            font-weight: 700;
+        }
+        h1 { font-size: 2.25rem; margin-bottom: 1.5rem; line-height: 1.2; }
+        h2 { font-size: 1.75rem; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+        h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #38bdf8; } /* Tailwind sky-400 */
+        p { margin-bottom: 1.25rem; }
+        ul { margin-bottom: 1.5rem; padding-left: 1.5rem; list-style-type: disc; }
+        li { margin-bottom: 0.5rem; }
+        .mermaid { background: #1e293b; padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 2rem; border: 1px solid #334155; display: flex; justify-content: center; overflow-x: auto; }
+        .abstract { font-size: 1.125rem; font-style: italic; border-left: 4px solid #0ea5e9; padding-left: 1rem; margin-bottom: 2rem; background: #0f172a; padding: 1.5rem; border-radius: 0 0.5rem 0.5rem 0; }
+        .print-friendly-mode { background-color: white !important; color: black !important; }
+        .print-friendly-mode h1, .print-friendly-mode h2, .print-friendly-mode h3 { color: black !important; border-color: #ccc; }
+        .print-friendly-mode .mermaid { background: white; border-color: #ccc; }
+        .print-friendly-mode .abstract { background: #f3f4f6; border-left-color: #2563eb; }
+    </style>
+</head>
+<body class="p-8 md:p-12 max-w-5xl mx-auto">
+
+    <header class="mb-12 text-center border-b border-slate-700 pb-8">
+        <h1 class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">Tactical Advantage: Networking Interceptors with MALE Drones</h1>
+        <p class="text-sm text-slate-400 uppercase tracking-widest font-semibold">SKHY AI Proprietary Research | Defense Systems</p>
+        <p class="text-sm text-slate-500 mt-2">Document Ref: SKHY-WP-2026-09</p>
+    </header>
+
+    <div class="abstract">
+        <strong>Abstract:</strong> As hostile UAS (Unmanned Aerial Systems) and loitering munitions become increasingly sophisticated, they rely heavily on unpredictable maneuvering and intense Radio Frequency (RF) jamming to evade interception. This whitepaper analyzes the strategic and technical necessity of networking tactical interceptor drones with Medium Altitude Long Endurance (MALE) platforms to establish a resilient, over-the-horizon guidance network capable of neutralizing adaptive targets in contested airspace.
+    </div>
+
+    <h2>1. The Challenge: Adaptive Targets in Contested Environments</h2>
+    <p>
+        Modern tactical engagements are characterized by severe Electronic Warfare (EW). Hostile targets—such as evasive drones or cruise missiles—frequently employ localized GPS spoofing and RF jamming to sever the Command and Control (C2) link of pursuing interceptors.
+    </p>
+    <p>
+        When an interceptor relies solely on a direct Line-of-Sight (LoS) link to a Ground Control Station (GCS), the terrain, curvature of the Earth, and active jamming significantly reduce the probability of a successful kill. Furthermore, targets utilizing high-G evasive maneuvers require the interceptor to constantly update its trajectory, demanding a high-bandwidth, low-latency datalink that a jammed GCS connection cannot reliably provide.
+    </p>
+
+    <h2>2. The Solution: MALE Drones as Aerial C2 Nodes</h2>
+    <p>
+        By integrating a MALE drone into the kill chain, the architecture shifts from a vulnerable ground-to-air link to a highly resilient air-to-air network. Operating at altitudes between 10,000 and 30,000 feet, the MALE drone acts as a secure, high-altitude relay and sensor fusion hub.
+    </p>
+
+    <h3>2.1 Overcoming RF Jamming</h3>
+    <p>
+        Jamming signals are typically directional or localized near the ground/target. A MALE drone looking down from a high altitude possesses a distinct geometric advantage:
+    </p>
+    <ul>
+        <li><strong>Spatial Diversity:</strong> The interceptor can utilize directional antennas pointing <em>upward</em> towards the MALE relay, shielding its receiver from ground-based or target-based jammers.</li>
+        <li><strong>High-Power Transmission:</strong> The MALE platform, unconstrained by the severe Size, Weight, and Power (SWaP) limitations of a small interceptor, can broadcast guidance updates with significantly higher transmitter power, punching through the noise floor.</li>
+        <li><strong>Frequency Agility:</strong> MALE platforms can dynamically shift frequencies (Cognitive Radio) and utilize laser communications (FSOC) for a virtually unjammable backhaul to the GCS.</li>
+    </ul>
+
+    <div class="mermaid">
+    graph TD
+        A[Ground Control Station] -- SATCOM / Secure LoS --> B(MALE Drone Node)
+        B -- Directional High-Gain Link --> C{SKHY Interceptor}
+        D[Hostile Jammer / Target] -. Jamming Signal .-x C
+        D -. Jamming Signal .-x A
+        style A fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff
+        style B fill:#1e40af,stroke:#60a5fa,stroke-width:3px,color:#fff
+        style C fill:#047857,stroke:#34d399,stroke-width:2px,color:#fff
+        style D fill:#991b1b,stroke:#f87171,stroke-width:2px,color:#fff
+    </div>
+
+    <h3>2.2 Defeating Evasive Maneuvers</h3>
+    <p>
+        When a target engages in evasive maneuvers, the interceptor must predict the target's future state. However, the interceptor's onboard sensors (e.g., optical seekers) have a limited Field of View (FoV) and can lose track if the target breaks lock.
+    </p>
+    <p>
+        The MALE drone provides "God's Eye" situational awareness. Equipped with powerful Synthetic Aperture Radar (SAR), GMTI (Ground Moving Target Indicator), and wide-area optical sensors, the MALE tracks the target continuously, even through cloud cover or evasive banking. The MALE's onboard AI calculates the optimal interception trajectory and beams these updated waypoints directly to the interceptor.
+    </p>
+
+    <h2>3. Network Architecture & Implementation</h2>
+    <p>
+        The SKHY AI architecture employs a multi-tier mesh network using <strong>Resilicom</strong> protocols. 
+    </p>
+    <ul>
+        <li><strong>Tier 1 (Strategic):</strong> GCS to MALE (SATCOM or high-bandwidth LoS).</li>
+        <li><strong>Tier 2 (Tactical):</strong> MALE to Interceptor Swarm (Directional Ku-band or Ka-band with rapid frequency hopping).</li>
+        <li><strong>Tier 3 (Terminal):</strong> Interceptor onboard AI edge processing. In the final seconds of engagement, if all RF links are severed, the interceptor relies exclusively on the MALE's last provided inertial vector and its own edge-AI optical seeker to execute the kinetic strike.</li>
+    </ul>
+
+    <div class="mermaid">
+    sequenceDiagram
+        participant GCS as Ground Control
+        participant MALE as MALE Relay
+        participant INT as Interceptor
+        participant TGT as Evasive Target
+        
+        GCS->>MALE: 1. Transmit Target Initial Coords
+        MALE->>INT: 2. Relay Coords & Launch Command
+        INT-->>MALE: 3. Telemetry & Ascent Profile
+        TGT-->>TGT: 4. Initiates RF Jamming & Evasion
+        MALE->>MALE: 5. Tracks Target via High-Alt Radar
+        MALE->>INT: 6. Transmits Updated Intercept Vector (Punching through jamming)
+        INT->>TGT: 7. Terminal Homing (Optical/IR)
+        INT-->>TGT: 8. Kinetic Intercept
+    </div>
+
+    <h2>4. Conclusion</h2>
+    <p>
+        Relying on direct Ground-to-Interceptor links is a critical vulnerability in modern EW environments. By elevating the C2 node via a MALE drone, defense forces regain the electromagnetic high ground. This networked approach ensures that interceptors receive continuous, high-fidelity guidance updates, neutralizing the advantages of both RF jamming and advanced evasive maneuvering.
+    </p>
+
+    <footer class="mt-16 pt-8 border-t border-slate-700 text-center text-sm text-slate-500">
+        &copy; 2026 SKHY AI Solutions. All rights reserved.<br>
+        Proprietary technology analysis. Not for public distribution without authorization.
+    </footer>
+
+    <!-- Mermaid.js for rendering diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'dark',
+            fontFamily: 'Inter'
+        });
+    </script>
+</body>
+</html>

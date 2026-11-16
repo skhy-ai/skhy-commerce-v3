@@ -1,0 +1,8 @@
+Contact: contact@skhy.systems
+Expires: 2027-01-01T00:00:00.000Z
+Languages: en
+Policy: https://skhy.systems/security
+Hiring: https://skhy.systems/careers
+Security-Acknowledgments: https://skhy.systems/security-acks
+Canonical: https://skhy.systems/.well-known/security.txt
+Preferred-Languages: en, hi

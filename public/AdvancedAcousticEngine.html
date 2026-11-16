@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skhy AI - Autonomous Systems Simplified | Advanced Acoustic Defense Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: #d1d5db; /* text-gray-300 */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+        .prose { max-width: 80ch; }
+        .prose p, .prose li { line-height: 1.75; }
+        .prose strong { color: #f3f4f6; }
+        .highlight-box {
+            background-color: #1f2937;
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .platform-card {
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .platform-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        #visualization-container {
+            position: relative;
+            width: 100%;
+            height: 50vh; /* Mobile height */
+            min-height: 400px;
+            background-color: #000000;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            cursor: grab;
+        }
+        #visualization-container:active { cursor: grabbing; }
+        .scenario-controls {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 0.5rem;
+            width: 90%;
+            justify-content: center;
+        }
+        .scenario-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            flex-grow: 1;
+        }
+        .scenario-btn:hover { background-color: #2563eb; }
+        .info-overlay {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background-color: rgba(17, 24, 39, 0.85);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #374151;
+            z-index: 10;
+            max-width: calc(100% - 1rem);
+            pointer-events: none;
+        }
+        .scene-label {
+            position: absolute;
+            background-color: rgba(17, 24, 39, 0.7);
+            color: #f3f4f6;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            transform: translate(-50%, -150%);
+            white-space: nowrap;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .cta-button:hover { background-color: #1d4ed8; }
+        table {
+            width: 100%;
+            margin-top: 1.5rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #374151;
+            text-align: left;
+        }
+        th { background-color: #1f2937; }
+        #watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.05;
+            color: white;
+            text-align: center;
+        }
+        #watermark svg {
+            width: 40vw;
+            height: 40vw;
+            max-width: 500px;
+            max-height: 500px;
+            margin: 0 auto;
+        }
+        #watermark h1 {
+            font-size: 10vw;
+            font-weight: bold;
+        }
+        /* --- Timeline Styles --- */
+        .timeline-wrapper {
+            width: 100%;
+        }
+        .timeline-bar, .timeline-details {
+            display: flex;
+            flex-direction: column; /* Mobile first */
+        }
+        .timeline-segment {
+            padding: 0.75rem;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .timeline-detail {
+            background-color: #1f2937;
+            padding: 1.5rem;
+            border-bottom: 1px solid #374151;
+        }
+        .timeline-details .timeline-detail:last-child {
+            border-bottom: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        .timeline-bar .timeline-segment:first-child {
+             border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        /* --- Light Mode Styles --- */
+        .light-mode {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+        .light-mode .text-white {
+            color: #111827 !important;
+        }
+        .light-mode .text-gray-400 {
+            color: #4b5563 !important;
+        }
+        .light-mode .highlight-box,
+        .light-mode .platform-card,
+        .light-mode .timeline-detail {
+            background-color: #ffffff;
+            border-color: #d1d5db;
+        }
+        .light-mode .timeline-detail {
+            border-right-color: #e5e7eb;
+        }
+        .light-mode table, .light-mode th, .light-mode td {
+            border-color: #e5e7eb;
+        }
+        .light-mode th {
+            background-color: #f9fafb;
+        }
+        .light-mode #watermark {
+            color: #111827;
+        }
+        .light-mode .info-overlay {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-color: #d1d5db;
+        }
+        .light-mode .info-overlay h3, .light-mode .info-overlay p {
+            color: #111827;
+        }
+        .light-mode .scene-label {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #111827;
+        }
+
+        @media (min-width: 768px) {
+            #visualization-container {
+                height: 600px;
+            }
+            .scenario-controls {
+                left: auto;
+                transform: none;
+                right: 1rem;
+                width: auto;
+            }
+            .scenario-btn {
+                padding: 0.75rem 1.5rem;
+                flex-grow: 0;
+            }
+            .info-overlay {
+                max-width: 450px;
+                top: 1rem;
+                left: 1rem;
+            }
+            .timeline-bar, .timeline-details {
+                flex-direction: row; /* Desktop layout */
+            }
+            .timeline-bar {
+                border-radius: 0.5rem 0.5rem 0 0;
+                overflow: hidden;
+            }
+            .timeline-segment {
+                flex-grow: 1;
+            }
+            .timeline-details {
+                background-color: #1f2937;
+                border-radius: 0 0 0.5rem 0.5rem;
+            }
+            .timeline-detail {
+                flex-grow: 1;
+                border-bottom: none;
+                border-right: 1px solid #374151;
+            }
+            .timeline-details .timeline-detail:last-child {
+                border-right: none;
+            }
+             .timeline-bar .timeline-segment:first-child {
+                border-radius: 0;
+            }
+        }
+
+        
+        /* ── Print Styles (Legacy removed, moved to whitepaper-print.css) ── */
+    </style>
+    <link rel="stylesheet" href="/css/whitepaper-print.css">
+</head>
+<body class="antialiased">
+
+    <!-- SKHY AI Branded Print Header (only visible when printing) -->
+    <div class="skhy-print-header">
+        <div class="skhy-print-header-logo-container">
+            <img src="/skhy-logo.jpg" alt="SKHY AI" class="skhy-print-header-logo-img">
+            <div class="skhy-print-header-text">
+                <h2>SKHY AI</h2>
+                <p>Technical Whitepaper Series</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content-wrapper">
+        <div class="absolute top-4 right-4 flex items-center space-x-2 z-20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <label for="theme-toggle" class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" value="" id="theme-toggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+        </div>
+        <div id="watermark">
+            <h1 class="text-5xl font-bold">SKHY</h1>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+            </svg>
+        </div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+            <div class="flex justify-center items-center text-white mb-6">
+                 <h1 class="text-3xl sm:text-5xl font-bold mr-4">SKHY</h1>
+                 <svg width="30" height="30" sm:width="40" sm:height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <polygon points="50,0 61,39 100,50 61,61 50,100 39,61 0,50 39,39" fill="currentColor"></polygon>
+                 </svg>
+            </div>
+            
+            <header class="text-center mb-12 sm:mb-16">
+                <h1 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Advanced Acoustic Defense Engine</h1>
+                <p class="mt-4 text-base sm:text-xl text-gray-400 max-w-3xl mx-auto">A Multi-Layered Architecture for Countering Modern Battlefield Threats</p>
+            </header>
+
+            <main class="prose prose-invert mx-auto">
+
+                <section id="summary" class="mb-16">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">Executive Summary</h2>
+                    <p>The modern battlespace is characterized by an increase in low-observable aerial threats and sophisticated electronic and acoustic countermeasures. Traditional surveillance systems struggle to operate effectively in these complex, contested environments. The <strong>Advanced Acoustic Defense Engine (AADE)</strong> is a next-generation, multi-layered sensing platform designed to overcome these challenges. By integrating physically resilient hardware with intelligent, AI-driven software, the AADE provides robust, high-fidelity threat detection and classification. It reliably identifies the unique "machine fingerprints" of hostile assets, even amidst loud, deceptive jamming, delivering a decisive operational advantage in perimeter, mobile, and airborne defense scenarios.</p>
+                </section>
+
+                <section id="problem" class="mb-16">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">The Evolving Battlefield</h2>
+                    <p>The modern battlefield is increasingly defined by stealth and deception. Adversaries employ advanced aerial threats designed to be quiet and hard to detect, while also using active countermeasures like loud sirens to confuse traditional sensors. This creates a complex acoustic environment where threats can easily hide, rendering conventional surveillance methods unreliable.</p>
+                </section>
+
+                <section id="solution" class="mb-16">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">Our Solution: The Acoustic Defense Engine</h2>
+                    <p>The Acoustic Defense Engine is a smart listening system designed to overcome these challenges. It's not just a single device, but a network of advanced sensors and intelligent software working together. The core principle is <strong>"Optimized Listening,"</strong> where every step of the process, from sound capture to analysis, is enhanced to pull faint threat sounds out of a noisy background.</p>
+                </section>
+                
+                <section id="how-it-works" class="mb-16">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">How It Works: The Intelligent Advantage</h2>
+                    <p>The system's success comes from a multi-stage intelligent process that mimics expert human listening, but on a massive, computerized scale.</p>
+                     <div class="highlight-box">
+                        <h3 class="text-xl sm:text-2xl text-white mb-2">1. Resilience to Loud Noise & Deception</h3>
+                        <p>Threats like the Geran-2 drone use loud engines or sirens to overwhelm sensors. Our physical sensors are built with customized <strong>High Acoustic Overload Point (AOP)</strong> components, allowing them to listen without being deafened or saturated. They can cleanly capture both the loud jamming noise and the much fainter, critical sounds of the threat itself without data loss from clipping.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3 class="text-xl sm:text-2xl text-white mb-2">2. Hybrid Analysis for Acoustic Overload</h3>
+                        <p>When the system detects a high-decibel, broadband noise source like a siren, it enters a hybrid analysis mode. The initial physics-based filters dynamically adapt, treating the siren as a dominant but predictable signal. This allows the AI/ML models to focus their processing power on the residual acoustic data, effectively "listening through" the jamming to find the underlying, repeating patterns of the threat's propulsion system—its machine fingerprint.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3 class="text-xl sm:text-2xl text-white mb-2">3. Identifying the "Machine Fingerprint"</h3>
+                        <p>Our advanced software doesn't just listen for loudness; it listens for character. Our core algorithms, built on models such as <strong>Convolutional Neural Networks (CNNs) and LSTMs</strong>, are trained using data that is extracted, mixed, and enhanced by our proprietary Acoustic AI framework. This framework generates a multitude of realistic environmental conditions and adversarial acoustic attack scenarios. This robust training allows the software to identify the unique, repeating spectrographic patterns—the 'machine fingerprint'—of specific threats, enabling it to lock onto the true target and ignore distracting background noise or deliberate jamming.</p>
+                    </div>
+                </section>
+
+                <!-- 3D Visualization Section -->
+                <section class="mb-16 not-prose">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2 mb-4 prose prose-invert mx-auto">Operational Scenarios: A Guided Tour</h2>
+                    <p class="prose prose-invert mx-auto">The Acoustic Defense Engine uses a network of different sensor types to create a complete defensive shield. The interactive tour below demonstrates how these platforms work together to counter a variety of threats. Use your mouse to rotate the view and the buttons to navigate between scenarios.</p>
+                    
+                    <div id="visualization-container" class="mt-8">
+                        <div id="info-overlay-container"></div>
+                        <div id="labels-container"></div>
+                        <div class="scenario-controls">
+                            <button id="prev-scenario-btn" class="scenario-btn">&#8592; Previous</button>
+                            <button id="next-scenario-btn" class="scenario-btn">Next &#8594;</button>
+                        </div>
+                    </div>
+
+                    <!-- Static Sequential Scenarios: hidden on screen, shown on print -->
+                    <div class="print-scenarios-grid">
+                        <div class="print-scenario-card">
+                            <div class="scenario-num">Scenario 01</div>
+                            <h4>Wide-Area Perimeter Defense</h4>
+                            <p>A layered perimeter defence deployment where high-gain Guardian nodes are cued by a wide network of low-cost mast sensors, providing early warning and directional inference across a 4.5 km radius hemisphere.</p>
+                            <ul>
+                                <li>Distributed acoustic mast grid provides broad coverage</li>
+                                <li>High-gain Guardian nodes triangulate threat bearing</li>
+                                <li>Cued alerting reduces false positive rate to &lt;0.1%</li>
+                                <li>Targets: high-altitude UAVs, loitering munitions, artillery</li>
+                            </ul>
+                        </div>
+                        <div class="print-scenario-card">
+                            <div class="scenario-num">Scenario 02</div>
+                            <h4>Coordinated Mobile Defense</h4>
+                            <p>A vehicle convoy shares real-time threat data via a mesh network link, enabling a coordinated response to an ambushing ground or aerial threat without requiring GCS communication.</p>
+                            <ul>
+                                <li>Vehicle-mounted Guardian units form a rolling acoustic mesh</li>
+                                <li>Peer-to-peer data fusion reduces response latency by 60%</li>
+                                <li>360° protective bubble per vehicle, 1.5 km radius</li>
+                                <li>Targets: loitering munitions, enemy vehicles, attack helicopters</li>
+                            </ul>
+                        </div>
+                        <div class="print-scenario-card">
+                            <div class="scenario-num">Scenario 03</div>
+                            <h4>Defeating Acoustic Jamming</h4>
+                            <p>The system isolates a drone's unique "machine fingerprint" from its loud siren countermeasure. Hybrid analysis mode dynamically adapts filters to treat the siren as a predictable broadband signal, allowing the AI to focus on the residual acoustic data from the propulsion system.</p>
+                            <ul>
+                                <li>High AOP sensors capture full dynamic range without clipping</li>
+                                <li>CNN/LSTM models identify spectrographic propulsion patterns</li>
+                                <li>Effective against Geran-2 class siren-equipped threats</li>
+                                <li>Lock maintained even at 130 dB SPL jamming level</li>
+                            </ul>
+                        </div>
+                        <div class="print-scenario-card">
+                            <div class="scenario-num">Scenario 04</div>
+                            <h4>Combined Arms Defense</h4>
+                            <p>A heterogeneous network of Perimeter, Mobile, and Airborne Guardian platforms creates a complete, layered defensive shield against simultaneous multi-axis air and ground threats with no coverage gaps.</p>
+                            <ul>
+                                <li>Perimeter nodes handle wide-area early warning</li>
+                                <li>Mobile units protect high-value convoy assets</li>
+                                <li>Airborne Guardian provides over-the-horizon cueing</li>
+                                <li>Centralised fusion engine correlates all threat tracks</li>
+                            </ul>
+                        </div>
+                        <div class="print-scenario-card">
+                            <div class="scenario-num">Scenario 05</div>
+                            <h4>Over-the-Horizon Swarm Detection</h4>
+                            <p>The Airborne Guardian, mounted on a fixed-wing ISR platform, detects an inbound drone swarm at long range (&gt;10 km) via its forward-looking 60° acoustic cone, providing critical advance warning to all friendly assets in the area.</p>
+                            <ul>
+                                <li>Detection range: &gt;10 km (forward-looking)</li>
+                                <li>60° forward acoustic cone coverage</li>
+                                <li>Swarm track count: up to 48 simultaneous targets</li>
+                                <li>Alert-to-engagement timeline: &lt;8 seconds from first detection</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="specs" class="mb-16">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">Technical Specifications</h2>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th>Detection Range (Nominal)</th>
+                                    <th>Coverage Area</th>
+                                    <th>Primary Targets</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Perimeter Guardian</strong></td>
+                                    <td>4.5 km (UAVs)</td>
+                                    <td>4.5 km radius hemisphere</td>
+                                    <td>High-altitude drones, loitering munitions, artillery</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mobile Guardian</strong></td>
+                                    <td>1.5 km (Ground & Air)</td>
+                                    <td>360° protective bubble</td>
+                                    <td>Loitering munitions, enemy vehicles, attack helicopters</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Airborne Guardian</strong></td>
+                                    <td>> 10 km (Forward-looking)</td>
+                                    <td>60° forward cone</td>
+                                    <td>Drone swarms, enemy air defenses, vehicle columns</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="comparison" class="mb-16">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">Competitive Comparison</h2>
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Capability</th>
+                                    <th class="text-blue-400">Acoustic Defense Engine</th>
+                                    <th>Legacy Acoustic Sensors</th>
+                                    <th>Traditional Radar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Counter-Stealth (Low RCS)</td>
+                                    <td class="text-green-400">Excellent</td>
+                                    <td class="text-green-400">Good</td>
+                                    <td class="text-red-400">Poor</td>
+                                </tr>
+                                <tr>
+                                    <td>Resistance to Jamming</td>
+                                    <td class="text-green-400">Excellent</td>
+                                    <td class="text-yellow-400">Fair</td>
+                                    <td class="text-red-400">Poor</td>
+                                </tr>
+                                <tr>
+                                    <td>Performance in Clutter</td>
+                                    <td class="text-green-400">Excellent</td>
+                                    <td class="text-red-400">Poor</td>
+                                    <td class="text-yellow-400">Fair</td>
+                                </tr>
+                                <tr>
+                                    <td>Target Classification</td>
+                                    <td class="text-green-400">Excellent</td>
+                                    <td class="text-yellow-400">Fair</td>
+                                    <td class="text-yellow-400">Fair</td>
+                                </tr>
+                                <tr>
+                                    <td>Passive / Undetectable</td>
+                                    <td class="text-green-400">Yes</td>
+                                    <td class="text-green-400">Yes</td>
+                                    <td class="text-red-400">No (Active Emitter)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="benefits" class="mb-16">
+                     <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">Platform Benefits & Operational Impact</h2>
+                    <p>The Acoustic Defense Engine's networked architecture is tailored to provide specific advantages across a range of operational platforms, creating a layered and resilient defense.</p>
+                    
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="platform-card">
+                            <h3 class="text-xl font-bold text-blue-400 mb-2">Perimeter Guardian</h3>
+                            <p class="text-gray-400">Fixed, high-sensitivity parabolic sensors are paired with a wide network of low-cost mast sensors. The mast sensors provide initial directional inference and early warning, cueing the high-gain sensors for precise classification at extreme ranges.</p>
+                            <ul class="mt-4 list-disc list-inside text-sm space-y-1">
+                                <li><strong>Impact:</strong> Creates a cost-effective, two-tiered defensive shield with no gaps. Wide-area cueing reduces the search sector for high-gain assets.</li>
+                                <li><strong>Detects:</strong> High-altitude drones, loitering munitions, incoming artillery.</li>
+                            </ul>
+                        </div>
+
+                        <div class="platform-card">
+                            <h3 class="text-xl font-bold text-green-400 mb-2">Mobile Guardian</h3>
+                            <p class="text-gray-400">Vehicle-mounted 360° sensors provide a protective bubble for troops on the move.</p>
+                            <ul class="mt-4 list-disc list-inside text-sm space-y-1">
+                                <li><strong>Impact:</strong> Enables rapid, coordinated response by sharing real-time threat data across the entire unit.</li>
+                                <li><strong>Detects:</strong> Loitering munitions, enemy vehicles (tanks, trucks), attack helicopters.</li>
+                            </ul>
+                        </div>
+
+                        <div class="platform-card">
+                            <h3 class="text-xl font-bold text-purple-400 mb-2">Airborne Guardian</h3>
+                            <p class="text-gray-400">Sensors integrated into friendly drones provide a stealthy, forward-sensing "tripwire."</p>
+                            <ul class="mt-4 list-disc list-inside text-sm space-y-1">
+                                <li><strong>Impact:</strong> Delivers over-the-horizon situational awareness, cueing other assets long before they are in range.</li>
+                                <li><strong>Detects:</strong> Drone swarms, enemy air defenses, vehicle columns, fast-moving jets.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="timeline" class="mb-16">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">Pilot Implementation Timeline: Airborne Guardian</h2>
+                    <div class="timeline-wrapper mt-8">
+                        <div class="timeline-bar">
+                            <div class="timeline-segment" style="background: linear-gradient(90deg, #1e3a8a, #2563eb); flex-basis: 25%;">Month 1</div>
+                            <div class="timeline-segment" style="background: linear-gradient(90deg, #2563eb, #3b82f6); flex-basis: 25%;">Month 2</div>
+                            <div class="timeline-segment" style="background: linear-gradient(90deg, #3b82f6, #93c5fd); flex-basis: 50%;">Months 3-4</div>
+                        </div>
+                        <div class="timeline-details">
+                            <div class="timeline-detail" style="flex-basis: 25%;">
+                                <h4 class="font-bold text-lg text-blue-300">Phase 1: Airborne Prototype & Lab Testing</h4>
+                                <p class="text-sm text-gray-400 mt-2">Integrate sensor pod with drone airframe. Conduct comprehensive lab testing to validate the signal processing chain and ego-noise models.</p>
+                            </div>
+                            <div class="timeline-detail" style="flex-basis: 25%;">
+                                <h4 class="font-bold text-lg text-blue-400">Phase 2: Initial Flight & Calibration</h4>
+                                <p class="text-sm text-gray-400 mt-2">Conduct initial flight tests in controlled airspace. Calibrate sensors against live aerial targets and collect real-world data to refine AI models.</p>
+                            </div>
+                            <div class="timeline-detail" style="flex-basis: 50%;">
+                                <h4 class="font-bold text-lg text-sky-400">Phase 3: Operational Exercise & Analysis</h4>
+                                <p class="text-sm text-gray-400 mt-2">Deploy the Airborne Guardian in a full-scale field exercise to test over-the-horizon and swarm detection. Deliver final report.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="conclusion" class="text-center">
+                    <h2 class="text-2xl sm:text-3xl text-white border-b border-gray-700 pb-2">Conclusion</h2>
+                    <p class="mt-4">The Advanced Acoustic Defense Engine represents a paradigm shift in battlefield surveillance. By moving beyond simple sound detection to intelligent acoustic analysis, it provides a reliable, passive, and highly resilient capability essential for modern military operations. It empowers warfighters with the foresight to detect, classify, and neutralize threats faster and more effectively than ever before.</p>
+                    <div class="mt-8 flex flex-col items-center space-y-4">
+                        <p class="text-slate-400 text-sm font-bold uppercase tracking-wide">For technical inquiries:</p>
+                        <div class="flex flex-wrap justify-center gap-6">
+                            <a href="mailto:contact@skhy.systems" class="text-blue-400 hover:text-blue-300 transition font-bold flex items-center gap-2">
+                                <i data-lucide="mail" class="w-4 h-4"></i> contact@skhy.systems
+                            </a>
+                            <a href="tel:+919335193489" class="text-blue-400 hover:text-blue-300 transition font-bold flex items-center gap-2">
+                                <i data-lucide="phone" class="w-4 h-4"></i> Global: +91-9335193489
+                            </a>
+                            <a href="tel:+601116370315" class="text-amber-400 hover:text-amber-300 transition font-bold flex items-center gap-2">
+                                <i data-lucide="phone" class="w-4 h-4"></i> Malaysia: +601116370315
+                            </a>
+                        </div>
+                        <div class="pt-4 border-t border-gray-800 w-full max-w-2xl text-[10px] text-gray-500 space-y-1">
+                            <p>Global Registration: Skand Dev Technologies (OPC) Pvt Ltd | DIPP234549</p>
+                            <p>South East Asia: SKhy AI Malaysia Registration Pending</p>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        // This script will be executed after the content is shown
+        function initializeVisualization() {
+            if (!document.getElementById('visualization-container')) return;
+
+            Promise.all([
+                import('three'),
+                import('three/addons/controls/OrbitControls.js'),
+                import('three/addons/postprocessing/EffectComposer.js'),
+                import('three/addons/postprocessing/RenderPass.js'),
+                import('three/addons/postprocessing/UnrealBloomPass.js')
+            ]).then(([THREE, { OrbitControls }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }]) => {
+                let scene, camera, renderer, controls, composer, hemisphereLight;
+                const container = document.getElementById('visualization-container');
+                const infoContainer = document.getElementById('info-overlay-container');
+                const labelsContainer = document.getElementById('labels-container');
+                let currentScenarioIndex = 0;
+                const activeObjects = new THREE.Group();
+                let animatedElements = [];
+
+                const scenarios = [
+                    { id: 1, title: "Wide-Area Perimeter Defense", description: "A layered perimeter: High-gain Guardians are cued by a wide network of low-cost mast sensors, providing early warning and directional inference." },
+                    { id: 2, title: "Coordinated Mobile Defense", description: "A vehicle convoy shares threat data via a network link, allowing for a coordinated response to an ambushing tank." },
+                    { id: 3, title: "Defeating Acoustic Jamming", description: "The system isolates a drone's 'machine fingerprint' from its loud siren, enabling a precise lock." },
+                    { id: 4, title: "Combined Arms Defense", description: "A network of platforms creates a complete, layered defensive shield against multiple air and ground threats." },
+                    { id: 5, title: "Over-the-Horizon Swarm Detection", description: "The Airborne Guardian detects an inbound drone swarm at long range, providing critical advance warning to friendly assets." }
+                ];
+
+                function init() {
+                    scene = new THREE.Scene();
+                    scene.background = new THREE.Color(0x111827);
+                    scene.fog = new THREE.Fog(0x111827, 200, 600);
+                    
+                    camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 2000);
+                    
+                    renderer = new THREE.WebGLRenderer({ antialias: true, canvas: container.querySelector('canvas') || document.createElement('canvas') });
+                    renderer.setSize(container.clientWidth, container.clientHeight);
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    renderer.shadowMap.enabled = true;
+                    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                    renderer.toneMappingExposure = 1.0;
+
+                    if (!container.querySelector('canvas')) container.appendChild(renderer.domElement);
+
+                    controls = new OrbitControls(camera, renderer.domElement);
+                    controls.enableDamping = true;
+                    controls.dampingFactor = 0.05;
+                    controls.autoRotate = true;
+                    controls.autoRotateSpeed = 0.5;
+
+                    // --- Professional Lighting Setup ---
+                    hemisphereLight = new THREE.HemisphereLight(0x406080, 0x101020, 1.5);
+                    scene.add(hemisphereLight);
+
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+                    directionalLight.position.set(50, 80, 60);
+                    directionalLight.castShadow = true;
+                    directionalLight.shadow.mapSize.width = 2048;
+                    directionalLight.shadow.mapSize.height = 2048;
+                    directionalLight.shadow.camera.near = 10;
+                    directionalLight.shadow.camera.far = 250;
+                    directionalLight.shadow.camera.left = -100;
+                    directionalLight.shadow.camera.right = 100;
+                    directionalLight.shadow.camera.top = 100;
+                    directionalLight.shadow.camera.bottom = -100;
+                    scene.add(directionalLight);
+                    
+                    scene.add(activeObjects);
+
+                    // --- Post-Processing ---
+                    const renderScene = new RenderPass(scene, camera);
+                    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.85);
+                    bloomPass.threshold = 0;
+                    bloomPass.strength = 0.6; // Subtle bloom
+                    bloomPass.radius = 0.5;
+
+                    composer = new EffectComposer(renderer);
+                    composer.addPass(renderScene);
+                    composer.addPass(bloomPass);
+
+
+                    loadScenario(currentScenarioIndex);
+                    animate();
+
+                    window.addEventListener('resize', onWindowResize);
+                    document.getElementById('next-scenario-btn').addEventListener('click', () => {
+                        currentScenarioIndex = (currentScenarioIndex + 1) % scenarios.length;
+                        loadScenario(currentScenarioIndex);
+                    });
+                    document.getElementById('prev-scenario-btn').addEventListener('click', () => {
+                        currentScenarioIndex = (currentScenarioIndex - 1 + scenarios.length) % scenarios.length;
+                        loadScenario(currentScenarioIndex);
+                    });
+                
+                    const themeToggle = document.getElementById('theme-toggle');
+                    const mainContent = document.querySelector('main');
+                    const themeIcon = document.querySelector('.absolute.top-4.right-4 svg');
+
+                    function setTheme(isLight) {
+                        document.body.classList.toggle('light-mode', isLight);
+                        mainContent.classList.toggle('prose-invert', !isLight);
+                        themeIcon.classList.toggle('text-white', !isLight);
+                        themeIcon.classList.toggle('text-gray-800', isLight);
+                        
+                        if (scene) {
+                            const bgColor = isLight ? 0xf3f4f6 : 0x111827;
+                            const groundColor = isLight ? 0xcccccc : 0x101020;
+                            scene.background.set(bgColor);
+                            scene.fog.color.set(bgColor);
+                            if(hemisphereLight) {
+                                hemisphereLight.groundColor.set(groundColor);
+                            }
+                        }
+                    }
+
+                    themeToggle.addEventListener('change', () => {
+                        setTheme(themeToggle.checked);
+                    });
+
+                    // Set initial theme based on user's system preference
+                    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+                    themeToggle.checked = prefersLight;
+                    setTheme(prefersLight);
+                }
+
+                function onWindowResize() {
+                    if (!renderer || !camera) return;
+                    const width = container.clientWidth;
+                    const height = container.clientHeight;
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(width, height);
+                    composer.setSize(width, height);
+                }
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    controls.update();
+                    
+                    const time = Date.now();
+
+                    animatedElements.forEach(el => {
+                        if (el.type === 'siren') {
+                            el.object.scale.setScalar(1.0 + 0.1 * Math.sin(time * 0.005));
+                        } else if (el.type === 'propSound') {
+                            el.object.material.opacity = 0.3 + 0.2 * Math.sin(time * 0.01);
+                        } else if (el.type === 'propeller') {
+                            el.object.rotation.x += 0.5;
+                        } else if (el.type === 'networkLine') {
+                            el.object.material.dashOffset = -time * 0.0005;
+                        } else if (el.type === 'label') {
+                            updateLabelPosition(el);
+                        }
+                    });
+
+                    composer.render();
+                }
+
+                const colors = {
+                    threat: 0x991b1b, threatLight: 0xdc2626,
+                    sensor: 0x1d4ed8, sensorLight: 0x3b82f6,
+                    friendly: 0x14532d, friendlyLight: 0x16a34a,
+                    detail: 0x4b5563, detailLight: 0x6b7280,
+                    base: 0x374151,
+                    cueing: 0x0ea5e9, // A light blue for cueing beams
+                };
+                
+                function createCamoTexture() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 128; canvas.height = 128;
+                    const context = canvas.getContext('2d');
+                    const camoColors = ['#2f3e2a', '#4a543e', '#6b6e4f', '#252a20'];
+                    context.fillStyle = camoColors[0];
+                    context.fillRect(0,0,128,128);
+                    for (let i = 0; i < 100; i++) {
+                        context.fillStyle = camoColors[Math.floor(Math.random() * camoColors.length)];
+                        context.beginPath();
+                        context.arc(Math.random() * 128, Math.random() * 128, Math.random() * 30, 0, Math.PI * 2);
+                        context.fill();
+                    }
+                    const texture = new THREE.CanvasTexture(canvas);
+                    texture.wrapS = THREE.RepeatWrapping;
+                    texture.wrapT = THREE.RepeatWrapping;
+                    return texture;
+                }
+                const camoTexture = createCamoTexture();
+
+                function createPerimeterGuardian() {
+                    const group = new THREE.Group();
+                    const baseMat = new THREE.MeshStandardMaterial({ color: colors.sensor, roughness: 0.4, metalness: 0.1 });
+                    const detailMat = new THREE.MeshStandardMaterial({ color: colors.detail, metalness: 0.2, roughness: 0.6});
+                    const postGeo = new THREE.CylinderGeometry(0.3, 0.5, 8, 8);
+                    const post = new THREE.Mesh(postGeo, detailMat);
+                    post.position.y = 4;
+                    post.castShadow = true;
+                    group.add(post);
+
+                    const dishGeo = new THREE.SphereGeometry(2.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2.5);
+                    const dish = new THREE.Mesh(dishGeo, baseMat);
+                    dish.position.y = 8;
+                    dish.castShadow = true;
+                    group.add(dish);
+
+                    const coverageGeo = new THREE.CylinderGeometry(45, 45, 0.2, 64, 1, true); 
+                    const coverageMat = new THREE.MeshBasicMaterial({ color: colors.sensorLight, transparent: true, opacity: 0.1, side: THREE.DoubleSide });
+                    const coverageCylinder = new THREE.Mesh(coverageGeo, coverageMat);
+                    coverageCylinder.position.y = 0.1;
+                    group.add(coverageCylinder);
+
+                    return group;
+                }
+                
+                function createMastSensor() {
+                    const group = new THREE.Group();
+                    const mat = new THREE.MeshStandardMaterial({ color: colors.detailLight, roughness: 0.6 });
+                    const poleGeo = new THREE.CylinderGeometry(0.2, 0.2, 10, 8);
+                    const pole = new THREE.Mesh(poleGeo, mat);
+                    pole.position.y = 5;
+                    pole.castShadow = true;
+                    group.add(pole);
+                    const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+                    const box = new THREE.Mesh(boxGeo, new THREE.MeshStandardMaterial({color: colors.sensorLight}));
+                    box.position.y = 10.5;
+                    box.castShadow = true;
+                    group.add(box);
+                    return group;
+                }
+
+                function createMobileGuardian() {
+                    const group = new THREE.Group();
+                    const chassisMat = new THREE.MeshStandardMaterial({color: colors.friendly, map: camoTexture, roughness: 0.8});
+                    const detailMat = new THREE.MeshStandardMaterial({color: colors.detail, roughness: 0.7});
+                    const chassisGeo = new THREE.BoxGeometry(9, 3, 5);
+                    const chassis = new THREE.Mesh(chassisGeo, chassisMat);
+                    chassis.position.y = 2; chassis.castShadow = true; group.add(chassis);
+                    const cabGeo = new THREE.BoxGeometry(4, 2.5, 4.5);
+                    const cab = new THREE.Mesh(cabGeo, chassisMat);
+                    cab.position.set(2.5, 3.25, 0); cab.castShadow = true; group.add(cab);
+                    const mastGeo = new THREE.CylinderGeometry(0.2, 0.2, 5, 8);
+                    const mast = new THREE.Mesh(mastGeo, detailMat);
+                    mast.position.y = 6; mast.castShadow = true;
+                    const boxGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                    const box = new THREE.Mesh(boxGeo, new THREE.MeshStandardMaterial({color: colors.sensor}));
+                    box.position.y = 8.5; box.castShadow = true; group.add(mast, box);
+                    for(let i = 0; i < 3; i++) {
+                        const wheelGeo = new THREE.CylinderGeometry(1, 1, 1, 16);
+                        const wheelL = new THREE.Mesh(wheelGeo, detailMat);
+                        wheelL.rotation.z = Math.PI/2;
+                        wheelL.position.set(-2.5 + i * 2.5, 1, 2.5);
+                        const wheelR = wheelL.clone();
+                        wheelR.position.z = -2.5;
+                        group.add(wheelL, wheelR);
+                    }
+                    return group;
+                }
+
+                function createAirborneGuardian() {
+                    const group = new THREE.Group();
+                    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
+                    
+                    // Fuselage (along X-axis)
+                    const fuselageGeo = new THREE.CapsuleGeometry(1, 12, 4, 16);
+                    const fuselage = new THREE.Mesh(fuselageGeo, bodyMat);
+                    fuselage.rotation.z = Math.PI / 2;
+                    fuselage.castShadow = true;
+                    group.add(fuselage);
+
+                    // Main Wings (Perpendicular to fuselage, along Z-axis)
+                    const wingGeo = new THREE.BoxGeometry(2, 0.3, 20); // depth, height, width(wingspan)
+                    const mainWing = new THREE.Mesh(wingGeo, bodyMat);
+                    mainWing.position.x = 1; 
+                    mainWing.castShadow = true;
+                    group.add(mainWing);
+
+                    // Tail Fin (Vertical Stabilizer)
+                    const tailFinGeo = new THREE.BoxGeometry(1.5, 2.5, 0.2);
+                    const tailFin = new THREE.Mesh(tailFinGeo, bodyMat);
+                    tailFin.position.set(-6, 1.5, 0);
+                    tailFin.castShadow = true;
+                    group.add(tailFin);
+
+                    // Horizontal Stabilizers
+                    const hStabGeo = new THREE.BoxGeometry(1.5, 0.2, 6);
+                    const hStab = new THREE.Mesh(hStabGeo, bodyMat);
+                    hStab.position.set(-6, 0.5, 0);
+                    hStab.castShadow = true;
+                    group.add(hStab);
+                    
+                    // Rotate entire model to face forward (-Z) in the scene
+                    group.rotation.y = Math.PI / 2;
+
+                    return group;
+                }
+
+                function createGeran2() {
+                    const group = new THREE.Group();
+                    const bodyMat = new THREE.MeshStandardMaterial({ color: colors.threat, roughness: 0.7 });
+                    
+                    // Delta Wing pointing along the +X axis
+                    const wingShape = new THREE.Shape();
+                    wingShape.moveTo(8, 0);   // Front tip
+                    wingShape.lineTo(-4, -7);  // Back left
+                    wingShape.lineTo(-4, 7);   // Back right
+                    wingShape.closePath();
+
+                    const extrudeSettings = { depth: 0.4, bevelEnabled: false };
+                    const wingGeo = new THREE.ExtrudeGeometry(wingShape, extrudeSettings);
+                    const wing = new THREE.Mesh(wingGeo, bodyMat);
+                    wing.rotation.x = -Math.PI / 2; // Lay it flat on the XZ plane
+                    wing.position.y = -0.2;
+                    wing.castShadow = true;
+                    group.add(wing);
+
+                    // Fuselage aligned with the wing
+                    const fuselageGeo = new THREE.CapsuleGeometry(1.5, 6, 4, 16);
+                    const fuselage = new THREE.Mesh(fuselageGeo, bodyMat);
+                    fuselage.rotation.z = Math.PI / 2; // Align capsule along X-axis
+                    fuselage.position.x = 1;
+                    fuselage.castShadow = true;
+                    group.add(fuselage);
+
+                    // Propeller at the back
+                    const propBladeGeo = new THREE.BoxGeometry(0.1, 2.5, 0.2);
+                    const propMat = new THREE.MeshStandardMaterial({color: colors.detail});
+                    const blade1 = new THREE.Mesh(propBladeGeo, propMat);
+                    const blade2 = blade1.clone();
+                    blade2.rotation.x = Math.PI / 2;
+                    const propellerGroup = new THREE.Group();
+                    propellerGroup.add(blade1, blade2);
+                    propellerGroup.position.x = -4.5;
+                    group.add(propellerGroup);
+
+                    animatedElements.push({ type: 'propeller', object: propellerGroup });
+                    
+                    // Rotate the whole model to face forward in the scene (-Z)
+                    group.rotation.y = -Math.PI / 2;
+
+                    return group;
+                }
+
+                function createTank() {
+                    const group = new THREE.Group();
+                    const bodyMat = new THREE.MeshStandardMaterial({ color: colors.threat, map: camoTexture, roughness: 0.9 });
+                    const detailMat = new THREE.MeshStandardMaterial({ color: colors.detail, roughness: 0.8 });
+                    const chassisGeo = new THREE.BoxGeometry(8, 3, 5);
+                    const chassis = new THREE.Mesh(chassisGeo, bodyMat);
+                    chassis.position.y = 2; chassis.castShadow = true; group.add(chassis);
+                    const turretGeo = new THREE.CylinderGeometry(2, 1.8, 1.5, 16);
+                    const turret = new THREE.Mesh(turretGeo, bodyMat);
+                    turret.position.y = 4; turret.castShadow = true; group.add(turret);
+                    const barrelGeo = new THREE.CylinderGeometry(0.3, 0.2, 7, 8);
+                    const barrel = new THREE.Mesh(barrelGeo, detailMat);
+                    barrel.rotation.z = Math.PI / 2; barrel.position.set(4, 4, 0); barrel.castShadow = true; group.add(barrel);
+                    const trackGeo = new THREE.BoxGeometry(9, 1.5, 5.5);
+                    const track = new THREE.Mesh(trackGeo, detailMat);
+                    track.position.y = 1; track.castShadow = true; group.add(track);
+                    return group;
+                }
+
+                function createJet() {
+                    const group = new THREE.Group();
+                    const fuselageMat = new THREE.MeshStandardMaterial({ color: colors.threatLight, metalness: 0.6, roughness: 0.3 });
+                    
+                    const fuselageGeo = new THREE.CylinderGeometry(0.8, 1.2, 14, 16);
+                    const fuselage = new THREE.Mesh(fuselageGeo, fuselageMat);
+                    fuselage.rotation.z = Math.PI / 2; fuselage.castShadow = true; group.add(fuselage);
+                    
+                    const cockpitGeo = new THREE.SphereGeometry(1.2, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2);
+                    const cockpit = new THREE.Mesh(cockpitGeo, new THREE.MeshStandardMaterial({color: 0x1e40af, transparent: true, opacity: 0.6, emissive: 0x1e40af, emissiveIntensity: 0.5}));
+                    cockpit.position.x = 4; cockpit.rotation.z = -Math.PI / 2; group.add(cockpit);
+                    
+                    const wingShape = new THREE.Shape();
+                    wingShape.moveTo(0,0);
+                    wingShape.lineTo(-6, 1.5);
+                    wingShape.lineTo(-6, -1.5);
+                    wingShape.lineTo(0,0);
+                    const extrudeSettings = { depth: 0.3, bevelEnabled: false };
+                    const wingGeo = new THREE.ExtrudeGeometry(wingShape, extrudeSettings);
+                    const wingL = new THREE.Mesh(wingGeo, fuselageMat);
+                    wingL.rotation.y = Math.PI / 2;
+                    wingL.castShadow = true;
+                    const wingR = wingL.clone();
+                    wingR.rotation.x = Math.PI;
+                    group.add(wingL, wingR);
+
+                    const tailGeo = new THREE.BoxGeometry(1.5, 3, 0.3);
+                    const tail = new THREE.Mesh(tailGeo, fuselageMat);
+                    tail.position.set(-6, 1.5, 0); tail.castShadow = true; group.add(tail);
+
+                    return group;
+                }
+                
+                function createHangar() {
+                    const group = new THREE.Group();
+                    const wallMat = new THREE.MeshStandardMaterial({color: colors.base, roughness: 0.8});
+                    const roofGeo = new THREE.CylinderGeometry(25, 25, 60, 32, 1, false, 0, Math.PI);
+                    const roof = new THREE.Mesh(roofGeo, wallMat);
+                    roof.rotation.z = Math.PI / 2; roof.position.y = 25;
+                    roof.receiveShadow = true; group.add(roof);
+                    const wallGeo = new THREE.BoxGeometry(60, 25, 0.5);
+                    const backWall = new THREE.Mesh(wallGeo, wallMat);
+                    backWall.position.z = -25; backWall.position.y = 12.5;
+                    backWall.receiveShadow = true; group.add(backWall);
+                    return group;
+                }
+
+                function createDetectionBeam(start, end, color = 0xfacc15) {
+                    const dir = new THREE.Vector3().subVectors(end, start);
+                    const length = dir.length();
+                    const geo = new THREE.CylinderGeometry(0, 1, length, 16, 1, true);
+                    const mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+                    const beam = new THREE.Mesh(geo, mat);
+                    beam.position.copy(start).add(dir.multiplyScalar(0.5));
+                    beam.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+                    return beam;
+                }
+                
+                function createNetworkLine(start, end) {
+                    const points = [start, end];
+                    const geo = new THREE.BufferGeometry().setFromPoints(points);
+                    const mat = new THREE.LineDashedMaterial({
+                        color: colors.sensorLight,
+                        linewidth: 2, scale: 1, dashSize: 2, gapSize: 1,
+                    });
+                    const line = new THREE.Line(geo, mat);
+                    line.computeLineDistances();
+                    animatedElements.push({type: 'networkLine', object: line});
+                    return line;
+                }
+
+                function createSirenEffect() {
+                    const geo = new THREE.SphereGeometry(25, 32, 16);
+                    const mat = new THREE.MeshBasicMaterial({ color: 0xfef08a, transparent: true, opacity: 0.15, emissive: 0xfef08a, emissiveIntensity: 0.2 });
+                    const mesh = new THREE.Mesh(geo, mat);
+                    animatedElements.push({type: 'siren', object: mesh});
+                    return mesh;
+                }
+
+                function createPropSound() {
+                    const geo = new THREE.ConeGeometry(3, 15, 8, 1, true);
+                    const mat = new THREE.MeshBasicMaterial({color: 0x22c55e, transparent: true, opacity: 0.3, side: THREE.DoubleSide, emissive: 0x22c55e, emissiveIntensity: 0.5});
+                    const cone = new THREE.Mesh(geo, mat);
+                    cone.rotation.x = Math.PI / 2;
+                    animatedElements.push({type: 'propSound', object: cone});
+                    return cone;
+                }
+
+                function addLabel(targetObject, text) {
+                    const div = document.createElement('div');
+                    div.className = 'scene-label';
+                    div.textContent = text;
+                    labelsContainer.appendChild(div);
+                    animatedElements.push({ type: 'label', object: targetObject, element: div, offset: new THREE.Vector3(0, 5, 0) });
+                }
+
+                function updateLabelPosition(label) {
+                    const position = new THREE.Vector3();
+                    label.object.getWorldPosition(position);
+                    position.add(label.offset);
+                    const screenPosition = position.project(camera);
+                    const x = (screenPosition.x * .5 + .5) * container.clientWidth;
+                    const y = (screenPosition.y * -.5 + .5) * container.clientHeight;
+                    label.element.style.left = `${x}px`;
+                    label.element.style.top = `${y}px`;
+                }
+
+                function showInfoOverlay(title, text) {
+                    infoContainer.innerHTML = `<div class="info-overlay">
+                        <h3 class="font-bold text-white mb-1">${title}</h3>
+                        <p class="text-sm text-gray-300">${text}</p>
+                    </div>`;
+                }
+
+                function clearScene() {
+                    animatedElements = [];
+                    labelsContainer.innerHTML = '';
+                    infoContainer.innerHTML = '';
+                    while(activeObjects.children.length > 0){ 
+                        const child = activeObjects.children[0];
+                        activeObjects.remove(child); 
+                        // Proper disposal
+                        if(child.geometry) child.geometry.dispose();
+                        if(child.material) {
+                            if (Array.isArray(child.material)) {
+                                child.material.forEach(m => m.dispose());
+                            } else {
+                                child.material.dispose();
+                            }
+                        }
+                    }
+                    if (scene.getObjectByName('ground')) {
+                        const ground = scene.getObjectByName('ground');
+                        scene.remove(ground);
+                        ground.geometry.dispose();
+                        ground.material.dispose();
+                    }
+                }
+
+                function loadScenario(index) {
+                    clearScene();
+                    const scenario = scenarios[index];
+                    showInfoOverlay(scenario.title, scenario.description);
+
+                    const ground = new THREE.Mesh(
+                        new THREE.PlaneGeometry(1000, 1000),
+                        new THREE.MeshStandardMaterial({ color: 0x27374D, roughness: 0.95 })
+                    );
+                    ground.rotation.x = -Math.PI / 2;
+                    ground.receiveShadow = true;
+                    ground.name = 'ground';
+                    scene.add(ground);
+
+                    switch(scenario.id) {
+                        case 1:
+                            const hangar = createHangar(); activeObjects.add(hangar);
+                            const guardianRadius = 80; 
+                            const mastRadius = 100;
+
+                            for(let i=0; i<8; i++) {
+                                const angle = (i/8) * Math.PI * 2;
+                                const sensor = createPerimeterGuardian();
+                                sensor.position.set(Math.cos(angle) * guardianRadius, 0, Math.sin(angle) * guardianRadius);
+                                activeObjects.add(sensor);
+                            }
+                            
+                            for(let i=0; i<16; i++) {
+                                const angle = (i/16) * Math.PI * 2;
+                                const sensor = createMastSensor();
+                                sensor.position.set(Math.cos(angle) * mastRadius, 0, Math.sin(angle) * mastRadius);
+                                activeObjects.add(sensor);
+                            }
+
+                            const g1 = createGeran2(); g1.position.set(-90, 25, -90); activeObjects.add(g1);
+                            
+                            const closestGuardianPos = new THREE.Vector3(Math.cos(5 * Math.PI / 4) * guardianRadius, 8, Math.sin(5 * Math.PI / 4) * guardianRadius);
+                            const closestMastPos = new THREE.Vector3(Math.cos(10 * Math.PI / 8) * mastRadius, 10.5, Math.sin(10 * Math.PI / 8) * mastRadius);
+
+                            activeObjects.add(createDetectionBeam(closestMastPos, g1.position, colors.cueing));
+                            activeObjects.add(createDetectionBeam(closestGuardianPos, g1.position));
+
+                            addLabel(g1, "Geran-2 Threat");
+                            addLabel(hangar, "Airbase");
+                            addLabel(activeObjects.children[1], "High-Gain Guardian");
+                            addLabel(activeObjects.children[9], "Mast Sensor (Cueing)");
+
+                            camera.position.set(0, 140, 180); controls.target.set(0, 5, 0);
+                            break;
+                        case 2:
+                            const convoy = [createMobileGuardian(), createMobileGuardian(), createMobileGuardian()];
+                            convoy[0].position.set(0,0,0);
+                            convoy[1].position.set(-20,0,-5);
+                            convoy[2].position.set(20,0,5);
+                            convoy.forEach(v => activeObjects.add(v));
+                            activeObjects.add(createNetworkLine(convoy[0].position, convoy[1].position));
+                            activeObjects.add(createNetworkLine(convoy[0].position, convoy[2].position));
+                            const t1 = createTank(); t1.position.set(-40, 0, -30); activeObjects.add(t1);
+                            activeObjects.add(createDetectionBeam(convoy[1].position.clone().setY(8.5), t1.position));
+                            addLabel(t1, "Hostile Tank");
+                            addLabel(convoy[0], "Convoy Lead");
+                            camera.position.set(-20, 60, 90); controls.target.set(-10, 5, 0);
+                            break;
+                        case 3:
+                            const s3 = createPerimeterGuardian(); activeObjects.add(s3);
+                            const g3 = createGeran2(); g3.position.set(0, 20, -30); activeObjects.add(g3);
+                            const sirenEffect = createSirenEffect(); g3.add(sirenEffect);
+                            const propSound = createPropSound(); propSound.position.y = 10; g3.add(propSound);
+                            activeObjects.add(createDetectionBeam(s3.position.clone().setY(8), g3.position));
+                            addLabel(sirenEffect, "Deceptive Jamming");
+                            addLabel(propSound, "Isolated Machine Fingerprint");
+                            camera.position.set(0, 40, 75); controls.target.set(0, 10, 0);
+                            break;
+                        case 4:
+                            const ps = createPerimeterGuardian(); ps.position.set(40, 0, 40); activeObjects.add(ps);
+                            const ms = createMobileGuardian(); ms.position.set(-35, 0, 0); activeObjects.add(ms);
+                            const as = createAirborneGuardian(); as.position.set(0, 35, 40); activeObjects.add(as);
+                            const tt = createTank(); tt.position.set(-40, 0, -30); activeObjects.add(tt);
+                            const jt = createJet(); jt.position.set(45, 30, -45); activeObjects.add(jt);
+                            const gt = createGeran2(); gt.position.set(35, 20, 25); activeObjects.add(gt);
+                            activeObjects.add(createDetectionBeam(ms.position.clone().setY(8.5), tt.position));
+                            activeObjects.add(createDetectionBeam(as.position, jt.position));
+                            activeObjects.add(createDetectionBeam(ps.position.clone().setY(8), gt.position));
+                            addLabel(ps, "Perimeter Guardian");
+                            addLabel(ms, "Mobile Guardian");
+                            addLabel(as, "Airborne Guardian");
+                            camera.position.set(0, 100, 150); controls.target.set(0, 10, 0);
+                            break;
+                        case 5:
+                            const airborneGuardian = createAirborneGuardian();
+                            airborneGuardian.position.set(0, 40, 60);
+                            activeObjects.add(airborneGuardian);
+
+                            const swarm = [];
+                            for (let i = 0; i < 7; i++) {
+                                const drone = createGeran2();
+                                drone.position.set(
+                                    -20 + (i % 3) * 20 + Math.random() * 5,
+                                    30 + Math.random() * 5,
+                                    -50 - Math.floor(i / 3) * 20
+                                );
+                                swarm.push(drone);
+                                activeObjects.add(drone);
+                            }
+                            
+                            // Draw detection beams only for drones inside the cone
+                            activeObjects.add(createDetectionBeam(airborneGuardian.position, swarm[0].position));
+                            activeObjects.add(createDetectionBeam(airborneGuardian.position, swarm[1].position));
+                            activeObjects.add(createDetectionBeam(airborneGuardian.position, swarm[2].position));
+
+                            addLabel(airborneGuardian, "Airborne Guardian");
+                            addLabel(swarm[1], "Drone Swarm");
+                            
+                            camera.position.set(0, 100, 150);
+                            controls.target.set(0, 30, 0);
+                            break;
+                    }
+                    controls.minDistance = 20; controls.maxDistance = 600;
+                    controls.update();
+                }
+                
+                init();
+            });
+        }
+
+        // --- Content is now unlocked by default ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeVisualization();
+        });
+    </script>
+</body>
+</html>

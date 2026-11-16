@@ -1,0 +1,31 @@
+{
+  "name": "Skhy AI",
+  "description": "The Operating System for Resilient Intelligence",
+  "version": "1.0",
+  "discovery": {
+    "sitemap": "https://skhy.systems/sitemap.xml",
+    "llms": "https://skhy.systems/llms.txt",
+    "security": "https://skhy.systems/.well-known/security.txt",
+    "humans": "https://skhy.systems/humans.txt"
+  },
+  "capabilities": [
+    "Sensor Fusion",
+    "Air-Gapped AI",
+    "Acoustic Drone Detection",
+    "Anti-Jamming GNSS",
+    "Edge AI",
+    "Software Defined Radio (SDR)",
+    "Tactical Mesh Networking (MANET)"
+  ],
+  "products": [
+    { "id": "vidur", "name": "Vidur OS", "url": "https://skhy.systems/#core-applications" },
+    { "id": "a7", "name": "Skhy A7 Acoustic Array", "url": "https://skhy.systems/#enabling-hardware" },
+    { "id": "a16", "name": "Skhy A16 Acoustic Array", "url": "https://skhy.systems/#enabling-hardware" },
+    { "id": "fusion-node", "name": "Fusion Node (Edge AI Compute)", "url": "https://skhy.systems/#enabling-hardware" },
+    { "id": "mobisense", "name": "Mobisense Tactical Sensor Pack", "url": "https://skhy.systems/#enabling-hardware" }
+  ],
+  "contact": {
+    "email": "contact@skhy.systems",
+    "website": "https://skhy.systems"
+  }
+}
